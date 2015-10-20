@@ -17,5 +17,5 @@ public abstract class Elemento implements Acoes{
 	public abstract void update(int currentTick);
 
 	public abstract void render(Graphics2D g);
-
+	
 }

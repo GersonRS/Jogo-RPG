@@ -41,8 +41,11 @@ public abstract class Personagem extends Elemento {
 		super(x, y, width, height);
 		this.level = 1;
 		this.expMax = 100;
-		this.hpMax = 100;
-		this.mpMax = 100;
+		this.exp = 0;
+		this.hpMax = 250;
+		this.hp = 250;
+		this.mpMax = 50;
+		this.mp = 50;
 		this.friction = 0.3;
 		this.stepInterval = 20;
 		this.ativo = true;
@@ -170,4 +173,29 @@ public abstract class Personagem extends Elemento {
 		r.height = pos.height/2;
 		return r;
 	}
+
+	public int getHp() {
+		return hp;
+	}
+
+	public int getHpMax() {
+		return hpMax;
+	}
+
+	public int getMp() {
+		return mp;
+	}
+
+	public int getMpMax() {
+		return mpMax;
+	}
+
+	public void setHp(int hp) {
+		this.hp = hp;
+	}
+
+	public void setMp(int mp) {
+		this.mp = mp;
+	}
+	
 }

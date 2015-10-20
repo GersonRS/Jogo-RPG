@@ -1,9 +1,17 @@
 package main;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -11,9 +19,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
+
+/**
+ * Controla o loop principal. Esta classe tentará atualizar as 
+ * lógicas em uma taxa fixa por segundo (UPS). Isso garante consistência 
+ * entre animações tanto em computadores de alta e baixa velocidade. 
+ * <p> 
+ * O número de quadros por segundo desenhar irá variar de acordo com o 
+ * hardware e com o tempo de processamento do jogo. Se o hardware é rápido 
+ * o suficiente um quadro será atualizado por lógicas atualização (isto é, fps == ups). 
+ * O tempo de sono entre os quadros serão calculados e mantidos automaticamente. 
+ * <p> 
+ * Se o hardware não é rápido o suficiente, não haverá tempo de sono entre os quadros. 
+ * Uma vez que esta poderia cair todos os outros segmentos, o ciclo irá gerar um sinal 
+ * de rendimento de cada vez que a contagem é obtida noDelaysPerYield. 
+ * <p> 
+ * O excesso de tempo para renderizar um quadro serão acumulados a cada ciclo. 
+ * Quando isso representa um erro grande o suficiente para pular um quadro, o 
+ * quadro será automaticamente skiped. O número máximo de quadros skiped num único 
+ * passo é dado pelo atributo maxFrameSkips. <p> Para iniciar o MainLoop chamar o 
+ * método run (). Por conveniência, a classe <code> Game </ code> é umaclasse abstrata.
+ */
 
 public abstract class Game implements Runnable, Iteracao {
 
@@ -32,13 +62,13 @@ public abstract class Game implements Runnable, Iteracao {
 	private static final int DEFAULT_MAX_FRAME_SKIPS = 5;
 	private JFrame mainWindow;
 	private BufferStrategy bufferStrategy;
-	private BufferedImage tela;
+	private BufferedImage tela, hud, hp, mp;
+	private final static Stroke stroke = new BasicStroke(1.5f);
 	private int width = 800;
-	private int height = 576;
+	private int height = 600;
 
 	private long desiredUpdateTime;
 	private boolean running;
-	private boolean pause;
 
 	private long afterTime;
 	private long beforeTime = System.currentTimeMillis();
@@ -51,12 +81,24 @@ public abstract class Game implements Runnable, Iteracao {
 
 	private int noDelays = 0;
 
-	private Elemento principal;
+	private Elemento elemento;
 	private HashMap<String, ArrayList<Elemento>> elementos;
 	private HashMap<String, Scenery> cenarios;
 	private String currentCenario;
 
-	// --------construtores----------//
+	/**
+     * Cria um novo objeto Game.
+     * 
+     * @param ups 
+     * 		Número de atualizações desejadas por segundo.
+     * @param maxFrameSkips 
+     * 		Número máximo de quadro que pode ser ignorado se o hardware 
+     * 		gráfico não é rápido o suficiente para acompanhar os altos desejados.
+     * @param noDelaysPerYield 
+     * 		Se o hardware não é rápido o suficiente para permitir uma dellay 
+     * 		entre dois quadros , o atraso será aplicada neste balcão, portanto, 
+     * 		outros segmentos podem processar suas ações.
+     */
 	public Game(int ups, int maxFrameSkips, int noDelaysPerYield) {
 		super();
 
@@ -80,15 +122,30 @@ public abstract class Game implements Runnable, Iteracao {
 
 	}
 
+	/**
+     * Cria um novo objeto Game
+     * 
+     * @param ups Número de atualizações desejadas por segundo.
+     */
 	public Game(int ups) {
 		this(ups, DEFAULT_MAX_FRAME_SKIPS, DEFAULT_NO_DELAYS_PER_YIELD);
 	}
 
+	/**
+     * Crie um novo objeto Game e uma atualização por segundo de 80 frames.
+     * 
+     */
 	public Game() {
 		this(DEFAULT_UPS);
 	}
 
-	// --------metodos------//
+	/**
+     * Dormir a quantidade de tempo determinado. Como o método sleep ()
+     * da classe thread não é preciso, o overSleepTime será calculado.
+     * 
+     * @param nanos Número de nanossegundos para dormir.
+     * @throws InterruptedException Se o segmento foi interrompida. 
+     */
 	private void sleep(long nanos) throws InterruptedException {
 		noDelays = 0;
 		long beforeSleep = System.nanoTime();
@@ -96,6 +153,10 @@ public abstract class Game implements Runnable, Iteracao {
 		overSleepTime = System.nanoTime() - beforeSleep - nanos;
 	}
 
+	/**
+     * Se o número de quadros sem um atraso é atingido , forçar a 
+     * Thread a ceder, permitindo que outros segmentos para processar .
+     */
 	private void yieldIfNeed() {
 		if (++noDelays == noDelaysPerYield) {
 			Thread.yield();
@@ -103,10 +164,29 @@ public abstract class Game implements Runnable, Iteracao {
 		}
 	}
 
+	/**
+     * Calcula o tempo de sono com base no cálculo do loop anterior. 
+     * Para atingir este tempo , o tempo de apresentação de imagem 
+     * serão subtraídos pelo tempo decorrido no último cálculo (afterTime - beforeTime). 
+     * Então , se no circuito anterior, houve um tempo oversleep , 
+     * este também será subtraído , de modo que o sistema pode compensar 
+     * este prolongamento.
+     */
 	private long calculateSleepTime() {
 		return desiredUpdateTime - (afterTime - beforeTime) - overSleepTime;
 	}
 
+	 /**
+     * Ir o número de quadros de acordo com o excesso determinado momento. 
+     * Isso permite que o jogo seja executado com a mesma velocidade, 
+     * mesmo se o computador tem uma taxa de quadros menor do que o necessário.
+     * O número total de saltos estão limitados a MAX_FRAME_SKIPS .
+     * 
+     * @param exceededTime
+     * 		O tempo excedido . Se o tempo é suficiente maior para ignorar um 
+     * 		ou mais quadros , eles serão ignorados.
+     * @return O tempo de excesso remanescente , após os pulos.
+     */
 	private void skipFramesInExcessTime(int tick) {
 		int skips = 0;
 		while ((excessTime > desiredUpdateTime) && (skips < maxFrameSkips)) {
@@ -116,7 +196,10 @@ public abstract class Game implements Runnable, Iteracao {
 		}
 	}
 
-	// -----------loop--------------//
+	 /**
+     * Executa o loop principal. Este método não é thread-safe 
+     * e não deve ser chamado mais de uma vez .
+     */
 	public void run() {
 		running = true;
 		Graphics2D g;
@@ -124,26 +207,24 @@ public abstract class Game implements Runnable, Iteracao {
 		try {
 			inicializacao();
 			while (running) {
-				if (!pause) {
-					g = (Graphics2D) tela.getGraphics();
-					tick++;
-					beforeTime = System.nanoTime();
-					skipFramesInExcessTime(tick);
-					updateKeys();
-					logica(tick);
-					testaColisao();
-					paint(g);
-					afterTime = System.nanoTime();
+				g = (Graphics2D) tela.getGraphics();
+				tick++;
+				beforeTime = System.nanoTime();
+				skipFramesInExcessTime(tick);
+				updateKeys();
+				logica(tick);
+				testaColisao();
+				paint(g);
+				afterTime = System.nanoTime();
 
-					long sleepTime = calculateSleepTime();
+				long sleepTime = calculateSleepTime();
 
-					if (sleepTime >= 0)
-						sleep(sleepTime);
-					else {
-						excessTime -= sleepTime;
-						overSleepTime = 0L;
-						yieldIfNeed();
-					}
+				if (sleepTime >= 0)
+					sleep(sleepTime);
+				else {
+					excessTime -= sleepTime;
+					overSleepTime = 0L;
+					yieldIfNeed();
 				}
 			}
 		} catch (Exception e) {
@@ -156,6 +237,9 @@ public abstract class Game implements Runnable, Iteracao {
 
 	// ---------------logica------------//
 
+	/**
+     * Este evento ocorre antes da primeira iteração do ciclo, e apenas uma vez.
+     */
 	private void inicializacao() {
 		mainWindow = new JFrame("Desenvolvimento de Jogos Digitais");
 		mainWindow.setSize(width, height);
@@ -175,24 +259,44 @@ public abstract class Game implements Runnable, Iteracao {
 
 		elementos.put("elementos", new ArrayList<Elemento>());
 
+		hp = new BufferedImage(110, 110, BufferedImage.TYPE_4BYTE_ABGR);
+		mp = new BufferedImage(110, 110, BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics g2 = hp.getGraphics();
+		g2.setColor(Color.red);
+		g2.fillRect(0, 0, hp.getWidth(), hp.getHeight());
+		g2 = mp.getGraphics();
+		g2.setColor(Color.blue);
+		g2.fillRect(0, 0, mp.getWidth(), mp.getHeight());
+
+		try {
+			hud = ImageIO.read(getClass().getClassLoader().getResource(
+					"images/hud.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		onLoad();
 
 	}
 
+	/**
+     * O método processLogics atualiza todos os estados jogo de objetos. 
+     * O jogo irá processá-lo do modelo de dados e definir a próxima 
+     * situação de jogo que irá ser pintado na tela.
+     */
 	private void logica(int tick) {
 
-		double x = principal.pos.x;
-		double y = principal.pos.y;
-		
+		double x = elemento.pos.x;
+		double y = elemento.pos.y;
 
 		onUpdate(tick);
 
-		if (principal.pos.x >= 400
-				&& principal.pos.x <= cenarios.get(currentCenario).getPos().width - 400)
-			cenarios.get(currentCenario).getPos().x -= principal.pos.x - x;
-		if (principal.pos.y >= 300
-				&& principal.pos.y <= cenarios.get(currentCenario).getPos().height - 300)
-			cenarios.get(currentCenario).getPos().y -= principal.pos.y - y;
+		if (elemento.pos.x >= 400
+				&& elemento.pos.x <= cenarios.get(currentCenario).getPos().width - 400)
+			cenarios.get(currentCenario).getPos().x -= elemento.pos.x - x;
+		if (elemento.pos.y >= 300
+				&& elemento.pos.y <= cenarios.get(currentCenario).getPos().height - 250)
+			cenarios.get(currentCenario).getPos().y -= elemento.pos.y - y;
 
 		if (cenarios.get(currentCenario).getPos().x > 0) {
 			cenarios.get(currentCenario).getPos().x = 0;
@@ -200,28 +304,62 @@ public abstract class Game implements Runnable, Iteracao {
 		if (cenarios.get(currentCenario).getPos().y > 0) {
 			cenarios.get(currentCenario).getPos().y = 0;
 		}
-		if (cenarios.get(currentCenario).getPos().x <
-				-cenarios.get(currentCenario).getPos().width + mainWindow
-					.getWidth()) {
-			cenarios.get(currentCenario).getPos().x = -cenarios.get(currentCenario).getPos().width + mainWindow
-					.getWidth();
+		if (cenarios.get(currentCenario).getPos().x < -cenarios.get(
+				currentCenario).getPos().width
+				+ mainWindow.getWidth()) {
+			cenarios.get(currentCenario).getPos().x = -cenarios.get(
+					currentCenario).getPos().width
+					+ mainWindow.getWidth();
 		}
-		if (cenarios.get(currentCenario).getPos().y <
-				-cenarios.get(currentCenario).getPos().height + mainWindow
-				.getHeight()) {
-			cenarios.get(currentCenario).getPos().y = -cenarios.get(currentCenario).getPos().height + mainWindow
-					.getHeight();
+		if (cenarios.get(currentCenario).getPos().y < -cenarios.get(
+				currentCenario).getPos().height
+				+ mainWindow.getHeight()) {
+			cenarios.get(currentCenario).getPos().y = -cenarios.get(
+					currentCenario).getPos().height
+					+ mainWindow.getHeight();
 		}
 	}
+
+	/**
+     * Tintas os gráficos prestados na tela.
+     */
 	private void paint(Graphics2D g) {
+
 		onRender(g);
+
 		Graphics2D g2d = (Graphics2D) bufferStrategy.getDrawGraphics();
 		g2d.drawImage(tela, (int) cenarios.get(currentCenario).getPos().x,
 				(int) cenarios.get(currentCenario).getPos().y, null);
+		g2d.drawImage(
+				getRoundImage(
+						hp,
+						0,
+						hp.getHeight()
+								- ((((Principal) elemento).getHp() * hp
+										.getHeight()) / ((Principal) elemento)
+										.getHpMax())), 0,
+				mainWindow.getHeight() - hud.getHeight(), null);
+		g2d.drawImage(
+				getRoundImage(
+						mp,
+						0,
+						mp.getHeight()
+								- ((((Principal) elemento).getMp() * mp
+										.getHeight()) / ((Principal) elemento)
+										.getMpMax())), 690,
+				mainWindow.getHeight() - hud.getHeight(), null);
+		g2d.drawImage(hud, 0, mainWindow.getHeight() - hud.getHeight(), null);
+		g2d.setColor(Color.white);
+		g2d.setFont(new Font("", Font.BOLD, 12));
+		g2d.drawString(((Principal) elemento).getHp() + " / "
+				+ ((Principal) elemento).getHpMax(), 28, 524);
+		g2d.drawString(((Principal) elemento).getMp() + " / "
+				+ ((Principal) elemento).getMpMax(), 728, 524);
 		g2d.dispose();
 		bufferStrategy.show();
 	}
 
+	
 	private void testaColisao() {
 		ArrayList<Elemento> element = this.elementos.get("elementos");
 		ArrayList<Elemento> obstaculo = this.elementos.get("obstaculos");
@@ -389,13 +527,13 @@ public abstract class Game implements Runnable, Iteracao {
 	}
 
 	protected void addElementoPrincipal(Elemento e) {
-		this.principal = e;
+		this.elemento = e;
 		addElemento(e);
 	}
 
-	protected void loadCenario(String cenario) {
+	protected void loadCenario(String cenario, String tileset) {
 		if (!cenarios.containsKey(cenario)) {
-			Scenery scenery = new Scenery(cenario);
+			Scenery scenery = new Scenery(cenario, tileset);
 			this.cenarios.put(cenario, scenery);
 			this.currentCenario = cenario;
 		} else {
@@ -405,8 +543,6 @@ public abstract class Game implements Runnable, Iteracao {
 
 	protected void currentCenario(String current) {
 		Scenery scenery = cenarios.get(current);
-		scenery.getPos().x = cenarios.get(currentCenario).getPos().x;
-		scenery.getPos().y = cenarios.get(currentCenario).getPos().y;
 		tela = new BufferedImage((int) scenery.getPos().width,
 				(int) scenery.getPos().height, BufferedImage.TYPE_4BYTE_ABGR);
 		ArrayList<Elemento> obstaculos = new ArrayList<Elemento>();
@@ -419,23 +555,33 @@ public abstract class Game implements Runnable, Iteracao {
 		this.currentCenario = current;
 	}
 
+	protected void configLayerBase(String cenario, String layer) {
+		cenarios.get(cenario).configLayerBase(layer);
+	}
+
+	protected void configLayerSuperficie(String cenario, String layer) {
+		cenarios.get(cenario).configLayerSuperficie(layer);
+	}
+
 	protected void renderCenario(Graphics2D g) {
 		cenarios.get(currentCenario).render(g);
 	}
+
 	protected void renderCenarioBase(Graphics2D g) {
 		cenarios.get(currentCenario).renderBase(g);
 	}
-	protected void renderCenarioCima(Graphics2D g) {
-		cenarios.get(currentCenario).renderCima(g);
+
+	protected void renderCenarioSuperficie(Graphics2D g) {
+		cenarios.get(currentCenario).renderSuperficie(g);
 	}
 
 	protected void renderCenario(Graphics2D g, String camada) {
 		cenarios.get(currentCenario).render(g, camada);
 	}
-	
-	protected void updateElementos(int tick){
+
+	protected void updateElementos(int tick) {
 		for (Elemento elemento : elementos.get("elementos")) {
-			if(elemento.ativo){
+			if (elemento.ativo) {
 				elemento.mover(this);
 				elemento.update(tick);
 			}
@@ -444,11 +590,44 @@ public abstract class Game implements Runnable, Iteracao {
 
 	protected void renderElementos(Graphics2D g) {
 		for (Elemento elemento : elementos.get("elementos")) {
-			if(elemento.visivel){
+			if (elemento.visivel) {
 				elemento.render(g);
-//				g.drawRect((int) elemento.getColisao().getX(), (int) elemento.getColisao().getY(),
-//						(int) elemento.getColisao().getWidth(), (int) elemento.getColisao().getHeight());
+				// g.drawRect((int) elemento.getColisao().getX(), (int)
+				// elemento.getColisao().getY(),
+				// (int) elemento.getColisao().getWidth(), (int)
+				// elemento.getColisao().getHeight());
 			}
 		}
+	}
+
+	public Elemento getPrincipal() {
+		return elemento;
+	}
+
+	public HashMap<String, ArrayList<Elemento>> getElementos() {
+		return elementos;
+	}
+
+	public static Image getRoundImage(Image imageSource, int x, int y) {
+		int width = imageSource.getWidth(null);
+		int height = imageSource.getHeight(null);
+
+		BufferedImage image = new BufferedImage(width, height,
+				BufferedImage.TYPE_INT_ARGB);
+		Ellipse2D elipc = new Ellipse2D.Double(0, 0, 110, 110);
+
+		Graphics2D g2 = (Graphics2D) image.getGraphics();
+
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+
+		g2.clip(elipc);
+		g2.drawImage(imageSource, x, y, null);
+
+		g2.setStroke(stroke);
+		g2.setColor(Color.LIGHT_GRAY);
+		g2.draw(elipc);
+
+		return image;
 	}
 }

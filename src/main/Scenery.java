@@ -23,8 +23,13 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+/**
+ * informações da classe Scenery
+ * 
+ * @author Gerson
+ */
 public class Scenery {
-
+	
 	private Rectangle2D.Double pos;
 	private int width, height;
 	private int tileWidth;
@@ -37,22 +42,43 @@ public class Scenery {
 	private HashMap<String, String> datas;
 	private HashMap<String, BufferedImage> layers;
 	private BufferedImage image;
+	private ArrayList<String> layersBase;
+	private ArrayList<String> layersSuperficie;
 
-	public Scenery(String diretorio) {
+	/**
+	 * 
+	 * Metodo Construtor da classe Scenery 
+	 * 
+	 * @param diretorio
+	 *            Diretorio de onde esta o cenario a ser carregado
+	 * @param tileset
+	 *            nome do arquivo tileset para este cenario
+	 */
+	
+	public Scenery(String diretorio, String tileset) {
 		this.datas = new HashMap<String, String>();
 		this.camadas = new HashMap<String, int[][]>();
 		this.objects = new ArrayList<Rectangle2D>();
+		this.layersBase = new ArrayList<String>();
+		this.layersSuperficie = new ArrayList<String>();
 		pos = new Rectangle2D.Double(0, 0, 0, 0);
 		carregaCenario(diretorio);
 		try {
 			this.image = ImageIO.read(getClass().getClassLoader().getResource(
-					"images/tileset.png"));
+					"images/"+tileset));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		montarMatriz();
-		load();
+		desenhaCamadas();
 	}
+	
+	/**
+	 * Metodo que constroi toda a matriz carregada 
+	 * apartir do arquivo do diretorio informado
+	 * 
+	 * @return void
+	 */
 
 	private void montarMatriz() {
 		try {
@@ -80,8 +106,14 @@ public class Scenery {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Desenha as camadas que compõe o cenário
+	 * 
+	 * @return void
+	 */
 
-	public void load() {
+	private void desenhaCamadas() {
 		layers = new HashMap<String, BufferedImage>();
 		for (Map.Entry<String, int[][]> entry : camadas.entrySet()) {
 			BufferedImage layer = new BufferedImage((int) pos.width,
@@ -112,22 +144,19 @@ public class Scenery {
 			}
 		}
 	}
+	
+	/**
+	 * Carrega o cenário a partir de um diretorio
+	 * 
+	 * @param diretorio
+	 *            Diretorio de onde esta o cenario
+	 * 
+	 * @return void
+	 */
 
-	public static void print(int[][] maze) {
-		int height = maze.length;
-		int width = maze[0].length;
-
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				System.out.print(maze[i][j] + "  ");
-			}
-			System.out.println();
-		}
-	}
-
-	private void carregaCenario(String resource) {
+	private void carregaCenario(String diretorio) {
 		InputStream is = getClass().getClassLoader().getResourceAsStream(
-				"scenerys/" + resource + ".tmx");
+				"scenerys/" + diretorio + ".tmx");
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
@@ -176,34 +205,104 @@ public class Scenery {
 
 	}
 
+	/**
+	 * Metodo que desenha o uma camada especificada por parametro
+	 * 
+	 * @param g
+	 * 			Graphics onde a camada será desenhado
+	 * @param name
+	 * 			Nome da camada a ser desenhada
+	 * 
+	 * @return void
+	 */
 	public void render(Graphics2D g, String name) {
 		g.drawImage(layers.get(name), 0, 0, null);
 	}
 
+	
+	/**
+	 * Metodo que desenha todas as camadas de uma vez
+	 * 
+	 * @param g
+	 * 			Graphics onde todas as camadas seram desenhadas
+	 * 
+	 * @return void
+	 */
 	public void render(Graphics2D g) {
 		for (BufferedImage img : layers.values()) {
 			g.drawImage(img, 0, 0, null);
 		}
 	}
 
+	/**
+	 * Metodo que desenha as camadas bases
+	 * 
+	 * @param g
+	 * 			Graphics onde as camadas bases seram desenhadas
+	 * 
+	 * @return void
+	 */
 	public void renderBase(Graphics2D g) {
-		for (String layer : layers.keySet()) {
-			if (layer.contains("Base"))
-				render(g, layer);
-			
+		for (String string : layersBase) {
+			render(g, string);
 		}
 	}
-	public void renderCima(Graphics2D g) {
-		for (String layer : layers.keySet()) {
-			if (!layer.contains("Base"))
-				render(g, layer);
+	
+	/**
+	 * Metodo que desenha as camadas da superficie
+	 * 
+	 * @param g
+	 * 			Graphics onde as camadas da superficie seram desenhadas
+	 * 
+	 * @return void
+	 */
+	public void renderSuperficie(Graphics2D g) {
+		for (String string : layersSuperficie) {
+			render(g, string);
 		}
+	}
+	
+	
+	/**
+	 * Metodo para a a definição das camadas bases
+	 * 
+	 * @param s
+	 * 			Nome da camada a ser definida como camada base
+	 * 
+	 * @return void
+	 */
+	public void configLayerBase(String s){
+		layersBase.add(s);
+	}
+	
+	
+	/**
+	 * Metodo para a a definição das camadas da superficie
+	 * 
+	 * @param s
+	 * 			Nome da camada a ser definida como camada da superficie
+	 * 
+	 * @return void
+	 */
+	public void configLayerSuperficie(String s){
+		layersSuperficie.add(s);
 	}
 
+	
+	/**
+	 * get do posicionamento do cenário
+	 * 
+	 * @return Rectangle2D.Double
+	 */
 	public Rectangle2D.Double getPos() {
 		return pos;
 	}
 
+	/**
+	 * get dos obstaculos que tem no cenrário
+	 * 
+	 * @return ArrayList<Rectangle2D>
+	 */
 	public ArrayList<Rectangle2D> getObjects() {
 		return objects;
 	}
