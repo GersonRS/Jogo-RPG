@@ -554,21 +554,23 @@ public abstract class Game implements Runnable, Iteracao {
 	}
 
 	protected void currentCenario(String current) {
-		Scenery scenery = cenarios.get(current);
-		tela = new BufferedImage((int) scenery.getPos().width,
-				(int) scenery.getPos().height, BufferedImage.TYPE_4BYTE_ABGR);
-		ArrayList<Elemento> obstaculos = new ArrayList<Elemento>();
-		for (Rectangle2D r : scenery.getObjects()) {
-			obstaculos.add(new Obstaculo((int) r.getX(), (int) r.getY(),
-					(int) r.getWidth(), (int) r.getHeight()));
+		if (cenarios.containsKey(current)) {
+			Scenery scenery = cenarios.get(current);
+			tela = new BufferedImage((int) scenery.getPos().width,
+					(int) scenery.getPos().height,
+					BufferedImage.TYPE_4BYTE_ABGR);
+			ArrayList<Elemento> obstaculos = new ArrayList<Elemento>();
+			for (Obstaculo o : scenery.getObstaculos()) {
+				obstaculos.add(o);
+			}
+			elementos.remove("obstaculos");
+			elementos.put("obstaculos", obstaculos);
+			for (ArrayList<Elemento> elements : elementos.values()) {
+				elements.remove(elemento);
+			}
+			elementos.get(current).add(elemento);
+			this.currentCenario = current;
 		}
-		elementos.remove("obstaculos");
-		elementos.put("obstaculos", obstaculos);
-		for (ArrayList<Elemento> elements : elementos.values()) {
-			elements.remove(elemento);
-		}
-		elementos.get(current).add(elemento);
-		this.currentCenario = current;
 	}
 
 	protected void configLayerBase(String cenario, String layer) {

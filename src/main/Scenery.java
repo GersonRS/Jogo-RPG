@@ -29,13 +29,15 @@ import org.xml.sax.SAXException;
  * @author Gerson
  */
 public class Scenery {
-	
+
 	private Rectangle2D.Double pos;
+	private String name;
+	private HashMap<String, Integer> destino;
 	private int width, height;
 	private int tileWidth;
 	private int tileHeight;
 	private String source;
-	private ArrayList<Rectangle2D> objects;
+	private HashMap<String, ArrayList<Obstaculo>> obstaculos;
 	private HashMap<String, int[][]> camadas;
 	private HashMap<String, String> datas;
 	private HashMap<String, BufferedImage> layers;
@@ -45,35 +47,36 @@ public class Scenery {
 
 	/**
 	 * 
-	 * Metodo Construtor da classe Scenery 
+	 * Metodo Construtor da classe Scenery
 	 * 
 	 * @param diretorio
 	 *            Diretorio de onde esta o cenario a ser carregado
 	 * @param tileset
 	 *            nome do arquivo tileset para este cenario
 	 */
-	
+
 	public Scenery(String diretorio) {
 		this.datas = new HashMap<String, String>();
 		this.camadas = new HashMap<String, int[][]>();
-		this.objects = new ArrayList<Rectangle2D>();
+		this.obstaculos = new HashMap<String, ArrayList<Obstaculo>>();
 		this.layersBase = new ArrayList<String>();
 		this.layersSuperficie = new ArrayList<String>();
+		this.destino = new HashMap<String, Integer>();
 		pos = new Rectangle2D.Double();
 		carregaCenario(diretorio);
 		try {
 			this.image = ImageIO.read(getClass().getClassLoader().getResource(
-					"images/"+source));
+					"images/" + source));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		montarMatriz();
 		desenhaCamadas();
 	}
-	
+
 	/**
-	 * Metodo que constroi toda a matriz carregada 
-	 * apartir do arquivo do diretorio informado
+	 * Metodo que constroi toda a matriz carregada apartir do arquivo do
+	 * diretorio informado
 	 * 
 	 * @return void
 	 */
@@ -104,7 +107,7 @@ public class Scenery {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Desenha as camadas que compõe o cenário
 	 * 
@@ -116,6 +119,7 @@ public class Scenery {
 		for (Map.Entry<String, int[][]> entry : camadas.entrySet()) {
 			BufferedImage layer = new BufferedImage((int) pos.width,
 					(int) pos.height, BufferedImage.TYPE_4BYTE_ABGR);
+			ArrayList<Obstaculo> obs = new ArrayList<Obstaculo>();
 			for (int i = 0; i < height; i++) {
 				for (int j = 0; j < width; j++) {
 					int tile = (entry.getValue()[i][j] != 0) ? (entry
@@ -130,21 +134,35 @@ public class Scenery {
 							(tileRow * tileHeight) + tileHeight, null);
 					if (entry.getKey().equalsIgnoreCase("obstaculos")
 							&& tile != 0) {
-						Rectangle2D.Double r = new Rectangle2D.Double(
-								(j * tileWidth), (i * tileHeight), tileWidth,
-								tileHeight);
-						objects.add(r);
-
+						Obstaculo o = new Obstaculo((j * tileWidth),
+								(i * tileHeight), tileWidth, tileHeight, tile);
+						obs.add(o);
+					} else if (entry.getKey().equalsIgnoreCase("in")
+							&& tile != 0) {
+						Obstaculo o = new Obstaculo((j * tileWidth),
+								(i * tileHeight), tileWidth, tileHeight, tile);
+						obs.add(o);
+					} else if (entry.getKey().equalsIgnoreCase("out")
+							&& tile != 0) {
+						Obstaculo o = new Obstaculo((j * tileWidth),
+								(i * tileHeight), tileWidth, tileHeight, tile);
+						obs.add(o);
 					}
 
 					layers.put(entry.getKey(), layer);
 				}
 			}
+			if (entry.getKey().equalsIgnoreCase("obstaculos"))
+				obstaculos.put(entry.getKey(), obs);
+			else if (entry.getKey().equalsIgnoreCase("in"))
+				obstaculos.put(entry.getKey(), obs);
+			else if (entry.getKey().equalsIgnoreCase("out"))
+				obstaculos.put(entry.getKey(), obs);
 		}
 		image = null;
 		System.gc();
 	}
-	
+
 	/**
 	 * Carrega o cenário a partir de um diretorio
 	 * 
@@ -157,6 +175,7 @@ public class Scenery {
 	private void carregaCenario(String diretorio) {
 		InputStream is = getClass().getClassLoader().getResourceAsStream(
 				"scenerys/" + diretorio + ".tmx");
+		this.name = diretorio;
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
@@ -179,13 +198,13 @@ public class Scenery {
 					.getAttribute("tilewidth"));
 			this.tileHeight = Integer.parseInt(docElement
 					.getAttribute("tileheight"));
-			
+
 			NodeList tileNodes = docElement.getElementsByTagName("tileset");
 			Element currente = (Element) tileNodes.item(0);
-			Element imageNode = (Element) currente.getElementsByTagName(
-					"image").item(0);
+			Element imageNode = (Element) currente
+					.getElementsByTagName("image").item(0);
 			this.source = imageNode.getAttribute("source");
-			
+
 			NodeList layerNodes = docElement.getElementsByTagName("layer");
 			for (int i = 0; i < layerNodes.getLength(); i++) {
 				Element current = (Element) layerNodes.item(i);
@@ -208,13 +227,17 @@ public class Scenery {
 
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	/**
 	 * Metodo que desenha o uma camada especificada por parametro
 	 * 
 	 * @param g
-	 * 			Graphics onde a camada será desenhado
+	 *            Graphics onde a camada será desenhado
 	 * @param name
-	 * 			Nome da camada a ser desenhada
+	 *            Nome da camada a ser desenhada
 	 * 
 	 * @return void
 	 */
@@ -222,12 +245,11 @@ public class Scenery {
 		g.drawImage(layers.get(name), 0, 0, null);
 	}
 
-	
 	/**
 	 * Metodo que desenha todas as camadas de uma vez
 	 * 
 	 * @param g
-	 * 			Graphics onde todas as camadas seram desenhadas
+	 *            Graphics onde todas as camadas seram desenhadas
 	 * 
 	 * @return void
 	 */
@@ -241,7 +263,7 @@ public class Scenery {
 	 * Metodo que desenha as camadas bases
 	 * 
 	 * @param g
-	 * 			Graphics onde as camadas bases seram desenhadas
+	 *            Graphics onde as camadas bases seram desenhadas
 	 * 
 	 * @return void
 	 */
@@ -250,12 +272,12 @@ public class Scenery {
 			render(g, string);
 		}
 	}
-	
+
 	/**
 	 * Metodo que desenha as camadas da superficie
 	 * 
 	 * @param g
-	 * 			Graphics onde as camadas da superficie seram desenhadas
+	 *            Graphics onde as camadas da superficie seram desenhadas
 	 * 
 	 * @return void
 	 */
@@ -264,34 +286,31 @@ public class Scenery {
 			render(g, string);
 		}
 	}
-	
-	
+
 	/**
 	 * Metodo para a a definição das camadas bases
 	 * 
 	 * @param s
-	 * 			Nome da camada a ser definida como camada base
+	 *            Nome da camada a ser definida como camada base
 	 * 
 	 * @return void
 	 */
-	public void configLayerBase(String s){
+	public void configLayerBase(String s) {
 		layersBase.add(s);
 	}
-	
-	
+
 	/**
 	 * Metodo para a a definição das camadas da superficie
 	 * 
 	 * @param s
-	 * 			Nome da camada a ser definida como camada da superficie
+	 *            Nome da camada a ser definida como camada da superficie
 	 * 
 	 * @return void
 	 */
-	public void configLayerSuperficie(String s){
+	public void configLayerSuperficie(String s) {
 		layersSuperficie.add(s);
 	}
 
-	
 	/**
 	 * get do posicionamento do cenário
 	 * 
@@ -304,9 +323,46 @@ public class Scenery {
 	/**
 	 * get dos obstaculos que tem no cenrário
 	 * 
-	 * @return ArrayList<Rectangle2D>
+	 * @return ArrayList<Obstaculo>
 	 */
-	public ArrayList<Rectangle2D> getObjects() {
-		return objects;
+	public ArrayList<Obstaculo> getObstaculos() {
+		return obstaculos.get("obstaculos");
 	}
+
+	/**
+	 * get dos lugares onde o personagem se teleporta
+	 * 
+	 * @return ArrayList<Obstaculo>
+	 */
+	public ArrayList<Obstaculo> getIn() {
+		return obstaculos.get("in");
+	}
+
+	/**
+	 * get dos lugares onde o personagem se teleporta para outros cenarios
+	 * 
+	 * @return ArrayList<Obstaculo>
+	 */
+	public ArrayList<Obstaculo> getOut() {
+		return obstaculos.get("out");
+	}
+
+	/**
+	 * Metodo que adiciona um cenario destino
+	 * 
+	 * @param cenario
+	 *            Nome do cenario destino
+	 * @param local
+	 *            numero do local para o qual o personagem ira se teleportar
+	 * 
+	 * @return void
+	 */
+	public void addDestino(String cenario, int local) {
+		destino.put(cenario, local);
+	}
+
+	public HashMap<String, Integer> getDestino() {
+		return destino;
+	}
+	
 }

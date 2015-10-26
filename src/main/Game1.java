@@ -11,12 +11,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map.Entry;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
-
 
 /**
  * Controla o loop principal. Esta classe tentará atualizar as lógicas em uma
@@ -66,24 +65,24 @@ public abstract class Game1 implements Runnable, Iteracao {
 	private BufferedImage tela;
 	private int width = 800;
 	private int height = 600;
-	
+
 	private int expectedTPS;
 	private double expectedNanosPerTick;
 	private int maxFrameSkip;
 
 	private boolean running;
-//	private long desiredUpdateTime;
-//
-//	private long afterTime;
-//	private long beforeTime = System.currentTimeMillis();
-//
-//	private long overSleepTime = 0;
-//	private long excessTime = 0;
-//
-//	private int noDelaysPerYield = DEFAULT_NO_DELAYS_PER_YIELD;
-//	private int maxFrameSkips = DEFAULT_MAX_FRAME_SKIPS;
-//
-//	private int noDelays = 0;
+	// private long desiredUpdateTime;
+	//
+	// private long afterTime;
+	// private long beforeTime = System.currentTimeMillis();
+	//
+	// private long overSleepTime = 0;
+	// private long excessTime = 0;
+	//
+	// private int noDelaysPerYield = DEFAULT_NO_DELAYS_PER_YIELD;
+	// private int maxFrameSkips = DEFAULT_MAX_FRAME_SKIPS;
+	//
+	// private int noDelays = 0;
 
 	private Elemento elemento;
 	private HashMap<String, ArrayList<Elemento>> elementos;
@@ -115,10 +114,10 @@ public abstract class Game1 implements Runnable, Iteracao {
 			ups = 1000;
 
 		this.running = true;
-//		this.desiredUpdateTime = 1000000000L / ups;
+		// this.desiredUpdateTime = 1000000000L / ups;
 
-//		this.maxFrameSkips = maxFrameSkips;
-//		this.noDelaysPerYield = noDelaysPerYield;
+		// this.maxFrameSkips = maxFrameSkips;
+		// this.noDelaysPerYield = noDelaysPerYield;
 		this.keyCache = new HashMap<Integer, Integer>();
 		this.pressedKeys = new ArrayList<Integer>();
 		this.releasedKeys = new ArrayList<Integer>();
@@ -144,66 +143,69 @@ public abstract class Game1 implements Runnable, Iteracao {
 	public Game1() {
 		this(DEFAULT_UPS);
 	}
-//
-//	/**
-//	 * Dormir a quantidade de tempo determinado. Como o método sleep () da
-//	 * classe thread não é preciso, o overSleepTime será calculado.
-//	 * 
-//	 * @param nanos
-//	 *            Número de nanossegundos para dormir.
-//	 * @throws InterruptedException
-//	 *             Se o segmento foi interrompida.
-//	 */
-//	private void sleep(long nanos) throws InterruptedException {
-//		noDelays = 0;
-//		long beforeSleep = System.nanoTime();
-//		Thread.sleep(nanos / 1000000L, (int) (nanos % 1000000L));
-//		overSleepTime = System.nanoTime() - beforeSleep - nanos;
-//	}
-//
-//	/**
-//	 * Se o número de quadros sem um atraso é atingido , forçar a Thread a
-//	 * ceder, permitindo que outros segmentos para processar .
-//	 */
-//	private void yieldIfNeed() {
-//		if (++noDelays == noDelaysPerYield) {
-//			Thread.yield();
-//			noDelays = 0;
-//		}
-//	}
-//
-//	/**
-//	 * Calcula o tempo de sono com base no cálculo do loop anterior. Para
-//	 * atingir este tempo , o tempo de apresentação de imagem serão subtraídos
-//	 * pelo tempo decorrido no último cálculo (afterTime - beforeTime). Então ,
-//	 * se no circuito anterior, houve um tempo oversleep , este também será
-//	 * subtraído , de modo que o sistema pode compensar este prolongamento.
-//	 */
-//	private long calculateSleepTime() {
-//		return desiredUpdateTime - (afterTime - beforeTime) - overSleepTime;
-//	}
-//
-//	/**
-//	 * Ir o número de quadros de acordo com o excesso determinado momento. Isso
-//	 * permite que o jogo seja executado com a mesma velocidade, mesmo se o
-//	 * computador tem uma taxa de quadros menor do que o necessário. O número
-//	 * total de saltos estão limitados a MAX_FRAME_SKIPS .
-//	 * 
-//	 * @param exceededTime
-//	 *            O tempo excedido . Se o tempo é suficiente maior para ignorar
-//	 *            um ou mais quadros , eles serão ignorados.
-//	 * @return O tempo de excesso remanescente , após os pulos.
-//	 */
-//	private void skipFramesInExcessTime(int tick) {
-//		int skips = 0;
-//		while ((excessTime > desiredUpdateTime) && (skips < maxFrameSkips)) {
-//			excessTime -= desiredUpdateTime;
-//			updateKeys();
-//			logica(tick);
-//			testaColisao();
-//			skips++;
-//		}
-//	}
+
+	//
+	// /**
+	// * Dormir a quantidade de tempo determinado. Como o método sleep () da
+	// * classe thread não é preciso, o overSleepTime será calculado.
+	// *
+	// * @param nanos
+	// * Número de nanossegundos para dormir.
+	// * @throws InterruptedException
+	// * Se o segmento foi interrompida.
+	// */
+	// private void sleep(long nanos) throws InterruptedException {
+	// noDelays = 0;
+	// long beforeSleep = System.nanoTime();
+	// Thread.sleep(nanos / 1000000L, (int) (nanos % 1000000L));
+	// overSleepTime = System.nanoTime() - beforeSleep - nanos;
+	// }
+	//
+	// /**
+	// * Se o número de quadros sem um atraso é atingido , forçar a Thread a
+	// * ceder, permitindo que outros segmentos para processar .
+	// */
+	// private void yieldIfNeed() {
+	// if (++noDelays == noDelaysPerYield) {
+	// Thread.yield();
+	// noDelays = 0;
+	// }
+	// }
+	//
+	// /**
+	// * Calcula o tempo de sono com base no cálculo do loop anterior. Para
+	// * atingir este tempo , o tempo de apresentação de imagem serão subtraídos
+	// * pelo tempo decorrido no último cálculo (afterTime - beforeTime). Então
+	// ,
+	// * se no circuito anterior, houve um tempo oversleep , este também será
+	// * subtraído , de modo que o sistema pode compensar este prolongamento.
+	// */
+	// private long calculateSleepTime() {
+	// return desiredUpdateTime - (afterTime - beforeTime) - overSleepTime;
+	// }
+	//
+	// /**
+	// * Ir o número de quadros de acordo com o excesso determinado momento.
+	// Isso
+	// * permite que o jogo seja executado com a mesma velocidade, mesmo se o
+	// * computador tem uma taxa de quadros menor do que o necessário. O número
+	// * total de saltos estão limitados a MAX_FRAME_SKIPS .
+	// *
+	// * @param exceededTime
+	// * O tempo excedido . Se o tempo é suficiente maior para ignorar
+	// * um ou mais quadros , eles serão ignorados.
+	// * @return O tempo de excesso remanescente , após os pulos.
+	// */
+	// private void skipFramesInExcessTime(int tick) {
+	// int skips = 0;
+	// while ((excessTime > desiredUpdateTime) && (skips < maxFrameSkips)) {
+	// excessTime -= desiredUpdateTime;
+	// updateKeys();
+	// logica(tick);
+	// testaColisao();
+	// skips++;
+	// }
+	// }
 
 	/**
 	 * Executa o loop principal. Este método não é thread-safe e não deve ser
@@ -212,60 +214,58 @@ public abstract class Game1 implements Runnable, Iteracao {
 	public void run() {
 		running = true;
 		Graphics2D g;
-//		int tick = 0;
+		// int tick = 0;
 		inicializacao();
 		expectedTPS = 60;
-		expectedNanosPerTick = GameSpeedTracker.NANOS_IN_ONE_SECOND / expectedTPS;
+		expectedNanosPerTick = GameSpeedTracker.NANOS_IN_ONE_SECOND
+				/ expectedTPS;
 		maxFrameSkip = 10;
 		long nanoTimeAtNextTick = System.nanoTime();
 		int skippedFrames = 0;
-		while (running)
-		{
-			g = (Graphics2D) tela.getGraphics();
+		while (running) {
 			speedTracker.update();
-			if (System.nanoTime() > nanoTimeAtNextTick && skippedFrames < maxFrameSkip)
-			{
+			if (System.nanoTime() > nanoTimeAtNextTick
+					&& skippedFrames < maxFrameSkip) {
 				nanoTimeAtNextTick += expectedNanosPerTick;
 				updateKeys();
 				logica(speedTracker.totalTicks);
 				testaColisao();
-				skippedFrames ++;
-				
-			}
-			else
-			{
+				skippedFrames++;
+
+			} else {
+				g = (Graphics2D) tela.getGraphics();
 				paint(g);
 				skippedFrames = 0;
 			}
 		}
-//		try {
-//			while (running) {
-//				g = (Graphics2D) tela.getGraphics();
-//				tick++;
-//				beforeTime = System.nanoTime();
-//				skipFramesInExcessTime(tick);
-//				updateKeys();
-//				logica(tick);
-//				testaColisao();
-//				paint(g);
-//				afterTime = System.nanoTime();
-//
-//				long sleepTime = calculateSleepTime();
-//
-//				if (sleepTime >= 0)
-//					sleep(sleepTime);
-//				else {
-//					excessTime -= sleepTime;
-//					overSleepTime = 0L;
-//					yieldIfNeed();
-//				}
-//			}
-//		} catch (Exception e) {
-//			throw new RuntimeException("Exception during game loop", e);
-//		} finally {
-//			running = false;
-//			System.exit(0);
-//		}
+		// try {
+		// while (running) {
+		// g = (Graphics2D) tela.getGraphics();
+		// tick++;
+		// beforeTime = System.nanoTime();
+		// skipFramesInExcessTime(tick);
+		// updateKeys();
+		// logica(tick);
+		// testaColisao();
+		// paint(g);
+		// afterTime = System.nanoTime();
+		//
+		// long sleepTime = calculateSleepTime();
+		//
+		// if (sleepTime >= 0)
+		// sleep(sleepTime);
+		// else {
+		// excessTime -= sleepTime;
+		// overSleepTime = 0L;
+		// yieldIfNeed();
+		// }
+		// }
+		// } catch (Exception e) {
+		// throw new RuntimeException("Exception during game loop", e);
+		// } finally {
+		// running = false;
+		// System.exit(0);
+		// }
 	}
 
 	// ---------------logica------------//
@@ -285,6 +285,12 @@ public abstract class Game1 implements Runnable, Iteracao {
 		mainWindow.createBufferStrategy(2);
 		mainWindow.setFocusable(true);
 		mainWindow.requestFocus();
+
+		ArrayList<Elemento> obs = new ArrayList<Elemento>();
+		ArrayList<Elemento> out = new ArrayList<Elemento>();
+
+		elementos.put("obstaculos", obs);
+		elementos.put("out", out);
 
 		bufferStrategy = mainWindow.getBufferStrategy();
 
@@ -368,6 +374,8 @@ public abstract class Game1 implements Runnable, Iteracao {
 	private void testaColisao() {
 		ArrayList<Elemento> element = this.elementos.get(currentCenario);
 		ArrayList<Elemento> obstaculo = this.elementos.get("obstaculos");
+		ArrayList<Elemento> out = this.elementos.get("out");
+
 		for (Elemento o : element) {
 			for (int i = 0; i < o.collidingEntities.length; i++) {
 				o.collidingEntities[i] = null;
@@ -451,6 +459,36 @@ public abstract class Game1 implements Runnable, Iteracao {
 						}
 
 				}
+			}
+		}
+		for (int i = 0; i < out.size(); i++) {
+			Obstaculo e = (Obstaculo) out.get(i);
+			if (e.ativo) {
+				double difX = (e.getColisao().getX() + (e.getColisao()
+						.getWidth() / 2))
+						- (elemento.getColisao().getX() + (e.getColisao()
+								.getWidth() / 2));
+				double difY = (e.getColisao().getY() + (e.getColisao()
+						.getHeight() / 2))
+						- (elemento.getColisao().getY() + (e.getColisao()
+								.getHeight() / 2));
+				double distancia = Math.sqrt((difX * difX) + (difY * difY));
+				if (distancia < 64)
+					if (e.getColisao().intersects(elemento.getColisao())) {
+						for (Entry<String, Integer> outs : cenarios
+								.get(currentCenario).getDestino().entrySet()) {
+							if(outs.getValue()==e.getTipo()){
+								for (Obstaculo in : cenarios.get(outs.getKey()).getIn()) {
+									if(in.getTipo()==e.getTipo()){
+										elemento.pos.y = in.pos.height-elemento.pos.height;
+										elemento.pos.x = in.pos.width/2;
+										currentCenario(outs.getKey());
+									}
+								}
+							}
+						}
+					}
+
 			}
 		}
 	}
@@ -583,27 +621,29 @@ public abstract class Game1 implements Runnable, Iteracao {
 			this.cenarios.put(cenario, scenery);
 			ArrayList<Elemento> elements = new ArrayList<Elemento>();
 			elementos.put(cenario, elements);
-		} else {
-			System.out.println("cenario ja carregado");
 		}
 	}
 
 	protected void currentCenario(String current) {
-		Scenery scenery = cenarios.get(current);
-		tela = new BufferedImage((int) scenery.getPos().width,
-				(int) scenery.getPos().height, BufferedImage.TYPE_4BYTE_ABGR);
-		ArrayList<Elemento> obstaculos = new ArrayList<Elemento>();
-		for (Rectangle2D r : scenery.getObjects()) {
-			obstaculos.add(new Obstaculo((int) r.getX(), (int) r.getY(),
-					(int) r.getWidth(), (int) r.getHeight()));
+		if (cenarios.containsKey(current)) {
+			Scenery scenery = cenarios.get(current);
+			tela = new BufferedImage((int) scenery.getPos().width,
+					(int) scenery.getPos().height,
+					BufferedImage.TYPE_4BYTE_ABGR);
+			elementos.get("obstaculos").clear();
+			for (Obstaculo o : scenery.getObstaculos()) {
+				elementos.get("obstaculos").add(o);
+			}
+			elementos.get("out").clear();
+			for (Obstaculo o : scenery.getOut()) {
+				elementos.get("out").add(o);
+			}
+			for (ArrayList<Elemento> elements : elementos.values()) {
+				elements.remove(elemento);
+			}
+			elementos.get(current).add(elemento);
+			this.currentCenario = current;
 		}
-		elementos.remove("obstaculos");
-		elementos.put("obstaculos", obstaculos);
-		for (ArrayList<Elemento> elements : elementos.values()) {
-			elements.remove(elemento);
-		}
-		elementos.get(current).add(elemento);
-		this.currentCenario = current;
 	}
 
 	protected void configLayerBase(String cenario, String layer) {
@@ -646,61 +686,55 @@ public abstract class Game1 implements Runnable, Iteracao {
 		for (Elemento elemento : elementos.get(currentCenario)) {
 			if (elemento.visivel) {
 				elemento.render(g);
-				// g.drawRect((int) elemento.getColisao().getX(), (int)
-				// elemento.getColisao().getY(),
-				// (int) elemento.getColisao().getWidth(), (int)
-				// elemento.getColisao().getHeight());
 			}
 		}
 	}
 
 	public Principal getElementoPrincipal() {
-		return (Principal)elemento;
+		return (Principal) elemento;
 	}
-	
-	
-	
-	public class GameSpeedTracker
-	{
+
+	public void addDestinario(String cenariOrigem, String cenarioDestino,
+			int local) {
+		if (cenarios.containsKey(cenariOrigem)
+				&& cenarios.containsKey(cenarioDestino))
+			cenarios.get(cenariOrigem).addDestino(cenarioDestino, local);
+	}
+
+	public class GameSpeedTracker {
 		static public final double NANOS_IN_ONE_SECOND = 1e9;
 		protected int ticksPerSecond;
 		protected long previousNanotime;
 		protected int countedTicks;
 		protected int totalTicks;
 
-		public void start()
-		{
+		public void start() {
 			previousNanotime = System.nanoTime();
 			countedTicks = 0;
 			ticksPerSecond = 0;
 			totalTicks = 0;
 		}
 
-		public int countTick()
-		{
+		public int countTick() {
 			countedTicks++;
 			totalTicks++;
 			update();
 			return totalTicks;
 		}
 
-		protected void update()
-		{
-			if (System.nanoTime() - previousNanotime > NANOS_IN_ONE_SECOND)
-			{
+		protected void update() {
+			if (System.nanoTime() - previousNanotime > NANOS_IN_ONE_SECOND) {
 				ticksPerSecond = countedTicks;
 				countedTicks = 0;
 				previousNanotime = System.nanoTime();
 			}
 		}
 
-		public int getTPS()
-		{
+		public int getTPS() {
 			return ticksPerSecond;
 		}
 
-		public int getTotalTicks()
-		{
+		public int getTotalTicks() {
 			return totalTicks;
 		}
 	}

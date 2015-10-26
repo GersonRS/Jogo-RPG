@@ -5,8 +5,11 @@ import java.awt.geom.Rectangle2D;
 
 public class Obstaculo extends Elemento {
 
-	public Obstaculo(int x, int y, int width, int height) {
+	private int tipo;
+
+	public Obstaculo(int x, int y, int width, int height, int tipo) {
 		super(x, y, width, height);
+		this.tipo = tipo;
 		this.ativo = true;
 		this.visivel = true;
 	}
@@ -29,6 +32,10 @@ public class Obstaculo extends Elemento {
 	@Override
 	public void render(Graphics2D g) {
 
+	}
+
+	public int getTipo() {
+		return tipo;
 	}
 
 }

@@ -22,6 +22,7 @@ public class Aplicacao extends Game1 {
 	@Override
 	public void onLoad() {
 		loadCenario("cidade");
+		loadCenario("floresta 1");
 		addElementoPrincipal("cidade", new Principal(180, 100, 23, 55, 6,
 				"personagem"));
 		// addElemento("cidade", new NPC(470, 180, 27, 57, 4, "Monstro.png",
@@ -54,7 +55,19 @@ public class Aplicacao extends Game1 {
 		configLayerBase("cidade", "muros");
 		configLayerSuperficie("cidade", "telhado");
 		configLayerSuperficie("cidade", "folhas");
-		currentCenario("cidade");
+		//configuração do cenario floresta 1
+		configLayerBase("floresta 1", "grama");
+		configLayerBase("floresta 1", "areia");
+		configLayerBase("floresta 1", "penhasco 1");
+		configLayerBase("floresta 1", "penhasco 2");
+		configLayerBase("floresta 1", "pedras");
+		configLayerBase("floresta 1", "morros 1");
+		configLayerBase("floresta 1", "troncos");
+		configLayerSuperficie("floresta 1", "morros 2");
+		configLayerSuperficie("floresta 1", "folhas 1");
+		configLayerSuperficie("floresta 1", "folhas 2");
+		
+		currentCenario("floresta 1");
 		hud = new Hud(getElementoPrincipal());
 		dialogo = new ArrayList<String>();
 		// playSoundLoop("som.wav");
