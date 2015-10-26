@@ -4,6 +4,6 @@ import java.awt.geom.Rectangle2D;
 
 public interface Colisao {
 	
-	Rectangle2D getColisao();
+	Rectangle2D.Double getColisao();
 
 }

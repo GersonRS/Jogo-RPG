@@ -1,14 +1,16 @@
 package main;
 
+import java.awt.Point;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
+
+import javax.swing.event.MouseInputListener;
 
 /**
  * 
  * Interface que posibilita iteração com o usuario.
  * 
  */
-public interface Iteracao extends KeyListener, MouseListener{
+public interface Iteracao extends KeyListener, MouseInputListener{
 	
 	// constantes 
 	final int KEY_RELEASED = 0;
@@ -37,4 +39,9 @@ public interface Iteracao extends KeyListener, MouseListener{
 	 */
 	boolean isJustPressed(int keyId);
 
+	boolean isReleased(int keyId);
+	
+	boolean isMousePressed(int buttonId);
+	
+	Point getMousePos();
 }

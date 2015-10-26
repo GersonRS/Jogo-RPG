@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 
 public abstract class Personagem extends Elemento {
 
-	protected BufferedImage image;
+	protected BufferedImage image, rosto;
 	protected final int ABOVE = 0;
 	protected final int RIGHT = 1;
 	protected final int BELOW = 2;
@@ -37,7 +37,8 @@ public abstract class Personagem extends Elemento {
 	private int stepInterval;
 	private int lastStepTick;
 
-	public Personagem(int x, int y, int width, int height, String img) {
+	public Personagem(int x, int y, int width, int height, int numFrames,
+			String img) {
 		super(x, y, width, height);
 		this.level = 1;
 		this.expMax = 100;
@@ -46,6 +47,7 @@ public abstract class Personagem extends Elemento {
 		this.hp = 250;
 		this.mpMax = 50;
 		this.mp = 50;
+		this.numFrames = numFrames;
 		this.friction = 0.3;
 		this.stepInterval = 20;
 		this.ativo = true;
@@ -55,11 +57,13 @@ public abstract class Personagem extends Elemento {
 		maxSpeed = new Point2D.Double(2, 2);
 		carregaImagem(img);
 	}
-	
+
 	private void carregaImagem(String img) {
 		try {
 			image = ImageIO.read(getClass().getClassLoader().getResource(
-					"images/" + img));
+					"images/" + img + ".png"));
+			rosto = ImageIO.read(getClass().getClassLoader().getResource(
+					"images/" + img + "Rosto.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -83,7 +87,8 @@ public abstract class Personagem extends Elemento {
 		if (speed.y < 0) {
 			if (collidingEntities[ABOVE] != null) {
 				pos.y = collidingEntities[ABOVE].getColisao().getY()
-						+ collidingEntities[ABOVE].getColisao().getHeight() - getColisao().getHeight() - 0.1;
+						+ collidingEntities[ABOVE].getColisao().getHeight()
+						- getColisao().getHeight() - 0.1;
 				speed.y = 0;
 				acceleration.y = 0;
 			} else {
@@ -94,7 +99,8 @@ public abstract class Personagem extends Elemento {
 			}
 		} else if (speed.y > 0) {
 			if (collidingEntities[BELOW] != null) {
-				pos.y = collidingEntities[BELOW].getColisao().getY() - pos.height + 0.1;
+				pos.y = collidingEntities[BELOW].getColisao().getY()
+						- pos.height + 0.1;
 				speed.y = 0;
 				acceleration.y = 0;
 			} else {
@@ -135,13 +141,13 @@ public abstract class Personagem extends Elemento {
 
 		if (speed.y != 0 || speed.x != 0) {
 			if (speed.y < 0)
-				direction = (ABOVE);
+				direction = ABOVE;
 			else if (speed.y > 0)
-				direction = (BELOW);
+				direction = BELOW;
 			else if (speed.x < 0)
-				direction = (LEFT);
+				direction = LEFT;
 			else if (speed.x > 0)
-				direction = (RIGHT);
+				direction = RIGHT;
 			if (currentTick - lastStepTick > stepInterval) {
 				lastStepTick = currentTick;
 			}
@@ -150,7 +156,7 @@ public abstract class Personagem extends Elemento {
 			state = (STATE_STANDING);
 			animates = (2);
 		}
-		if (currentTick % 8 == 0 && state == STATE_WALKING)
+		if (currentTick % 4 == 0 && state == STATE_WALKING)
 			animates++;
 	}
 
@@ -163,39 +169,15 @@ public abstract class Personagem extends Elemento {
 				(int) (((animates % numFrames) * pos.width) + pos.width),
 				(int) ((direction * pos.height) + pos.height), null);
 	}
-	
+
 	@Override
-	public Rectangle2D getColisao() {
+	public Rectangle2D.Double getColisao() {
 		Rectangle2D.Double r = new Rectangle2D.Double();
 		r.x = pos.x;
-		r.y = pos.y+pos.height/2;
+		r.y = pos.y + pos.height / 2;
 		r.width = pos.width;
-		r.height = pos.height/2;
+		r.height = pos.height / 2;
 		return r;
 	}
 
-	public int getHp() {
-		return hp;
-	}
-
-	public int getHpMax() {
-		return hpMax;
-	}
-
-	public int getMp() {
-		return mp;
-	}
-
-	public int getMpMax() {
-		return mpMax;
-	}
-
-	public void setHp(int hp) {
-		this.hp = hp;
-	}
-
-	public void setMp(int mp) {
-		this.mp = mp;
-	}
-	
 }

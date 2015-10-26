@@ -34,9 +34,7 @@ public class Scenery {
 	private int width, height;
 	private int tileWidth;
 	private int tileHeight;
-	protected String orientation;
-	protected String encoding;
-	protected String compression;
+	private String source;
 	private ArrayList<Rectangle2D> objects;
 	private HashMap<String, int[][]> camadas;
 	private HashMap<String, String> datas;
@@ -55,17 +53,17 @@ public class Scenery {
 	 *            nome do arquivo tileset para este cenario
 	 */
 	
-	public Scenery(String diretorio, String tileset) {
+	public Scenery(String diretorio) {
 		this.datas = new HashMap<String, String>();
 		this.camadas = new HashMap<String, int[][]>();
 		this.objects = new ArrayList<Rectangle2D>();
 		this.layersBase = new ArrayList<String>();
 		this.layersSuperficie = new ArrayList<String>();
-		pos = new Rectangle2D.Double(0, 0, 0, 0);
+		pos = new Rectangle2D.Double();
 		carregaCenario(diretorio);
 		try {
 			this.image = ImageIO.read(getClass().getClassLoader().getResource(
-					"images/"+tileset));
+					"images/"+source));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -143,6 +141,8 @@ public class Scenery {
 				}
 			}
 		}
+		image = null;
+		System.gc();
 	}
 	
 	/**
@@ -173,14 +173,19 @@ public class Scenery {
 			Document doc = builder.parse(is);
 			Element docElement = doc.getDocumentElement();
 
-			this.orientation = docElement.getAttribute("orientation");
-
 			this.width = Integer.parseInt(docElement.getAttribute("width"));
 			this.height = Integer.parseInt(docElement.getAttribute("height"));
 			this.tileWidth = Integer.parseInt(docElement
 					.getAttribute("tilewidth"));
 			this.tileHeight = Integer.parseInt(docElement
 					.getAttribute("tileheight"));
+			
+			NodeList tileNodes = docElement.getElementsByTagName("tileset");
+			Element currente = (Element) tileNodes.item(0);
+			Element imageNode = (Element) currente.getElementsByTagName(
+					"image").item(0);
+			this.source = imageNode.getAttribute("source");
+			
 			NodeList layerNodes = docElement.getElementsByTagName("layer");
 			for (int i = 0; i < layerNodes.getLength(); i++) {
 				Element current = (Element) layerNodes.item(i);
@@ -190,8 +195,6 @@ public class Scenery {
 				Node cdata = dataNode.getFirstChild();
 				String data = cdata.getNodeValue().trim();
 				this.datas.put(name, data);
-				this.encoding = dataNode.getAttribute("encoding");
-				this.compression = dataNode.getAttribute("compression");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

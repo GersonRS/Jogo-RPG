@@ -45,7 +45,7 @@ public class Audio {
 		}
 	}
 
-	public void audio() throws UnsupportedAudioFileException, IOException,
+	public void playLoop() throws UnsupportedAudioFileException, IOException,
 			LineUnavailableException {
 		URL url = getClass().getClassLoader()
 				.getResource("audios/" + "som.wav");
@@ -56,7 +56,7 @@ public class Audio {
 		FloatControl gainControl = (FloatControl) clip
 				.getControl(FloatControl.Type.MASTER_GAIN);
 		gainControl.setValue(-20.0f);
-		clip.start();
+//		clip.start();
 		clip.loop(Clip.LOOP_CONTINUOUSLY);
 	}
 }
