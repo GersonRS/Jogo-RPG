@@ -8,6 +8,7 @@ public abstract class Elemento implements Acoes{
 	protected Rectangle2D.Double pos;
 	protected Elemento[] collidingEntities;
 	protected boolean ativo,visivel;
+	protected int id;
 
 	public Elemento(int x, int y, int width, int height) {
 		pos = new Rectangle2D.Double(x, y, width, height);

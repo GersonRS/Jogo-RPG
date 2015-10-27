@@ -38,6 +38,15 @@ public class Inventario {
 			pecasgeometricas.add(peca);
 		}
 	}
+	
+	public void remove(int id){
+		for (int i = 0; i < pecasgeometricas.size(); i++) {
+			PecaGeometrica p = pecasgeometricas.get(i);
+			if(p.id==id){
+				pecasgeometricas.remove(i);
+			}
+		}
+	}
 
 	public ArrayList<PecaGeometrica> getPecasgeometricas() {
 		return pecasgeometricas;

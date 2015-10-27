@@ -69,9 +69,13 @@ public abstract class PecaGeometrica extends Elemento {
 		default:
 			break;
 		}
-		image = new BufferedImage((int) pos.width,
-				(int) pos.height, BufferedImage.TYPE_INT_ARGB);
-		
+		image = new BufferedImage((int) pos.width, (int) pos.height,
+				BufferedImage.TYPE_INT_ARGB);
+
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	@Override

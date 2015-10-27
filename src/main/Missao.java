@@ -1,6 +1,5 @@
 package main;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class Missao {
@@ -8,26 +7,21 @@ public class Missao {
 	private int nivel;
 	private String objetivo;
 	private int exp;
-	private int idPecaGeometricaRequerida;
-	private Point2D pos;
-	private String cenario;
+	private int[] idPecaGeometricaRequerida;
 	private int recompenca;
 	private boolean ativa;
 	private boolean concluida;
-	private String tipo;
+	private String layerLiberada;
 
-	public Missao(int nivel, String objetivo, int exp,
-			int idPecaGeometricaRequerida, String tipo, int recompenca, int x,
-			int y, String cenario) {
-		this.tipo = tipo;
+	public Missao(int nivel, String objetivo, int exp, int[] ids,
+			int recompenca, String layerLiberada) {
 		this.nivel = nivel;
 		this.objetivo = objetivo;
 		this.exp = exp;
-		this.idPecaGeometricaRequerida = idPecaGeometricaRequerida;
+		this.idPecaGeometricaRequerida = ids;
 		this.recompenca = recompenca;
+		this.layerLiberada = layerLiberada;
 		this.ativa = false;
-		this.pos = new Point2D.Double(x, y);
-		this.cenario = cenario;
 	}
 
 	public int getNivel() {
@@ -54,20 +48,12 @@ public class Missao {
 		this.exp = exp;
 	}
 
-	public int getIdPecaGeometricaRequerida() {
+	public int[] getIdPecaGeometricaRequerida() {
 		return idPecaGeometricaRequerida;
 	}
 
-	public void setIdPecaGeometricaRequerida(int idPecaGeometricaRequerida) {
+	public void setIdPecaGeometricaRequerida(int[] idPecaGeometricaRequerida) {
 		this.idPecaGeometricaRequerida = idPecaGeometricaRequerida;
-	}
-
-	public Point2D getPos() {
-		return pos;
-	}
-
-	public void setPos(Point2D pos) {
-		this.pos = pos;
 	}
 
 	public int getRecompenca() {
@@ -94,28 +80,26 @@ public class Missao {
 		this.concluida = concluida;
 	}
 
-	public String getCenario() {
-		return cenario;
+	public String getLayerLiberada() {
+		return layerLiberada;
 	}
 
-	public void setCenario(String cenario) {
-		this.cenario = cenario;
-	}
-
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
+	public void setLayerLiberada(String layerLiberada) {
+		this.layerLiberada = layerLiberada;
 	}
 
 	public boolean concluirMissao(ArrayList<PecaGeometrica> arrayList) {
-		for (PecaGeometrica pecaGeometrica : arrayList) {
-			if (idPecaGeometricaRequerida == pecaGeometrica.id)
-				return true;
+		int acertos = 0;
+		for (int i = 0; i < idPecaGeometricaRequerida.length; i++) {
+			for (PecaGeometrica pecaGeometrica : arrayList) {
+				if (idPecaGeometricaRequerida[i] == pecaGeometrica.id) {
+					acertos++;
+				}
+			}
 		}
-
-		return false;
+		if (acertos == idPecaGeometricaRequerida.length)
+			return true;
+		else
+			return false;
 	}
 }

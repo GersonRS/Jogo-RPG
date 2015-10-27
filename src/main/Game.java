@@ -559,12 +559,8 @@ public abstract class Game implements Runnable, Iteracao {
 			tela = new BufferedImage((int) scenery.getPos().width,
 					(int) scenery.getPos().height,
 					BufferedImage.TYPE_4BYTE_ABGR);
-			ArrayList<Elemento> obstaculos = new ArrayList<Elemento>();
-			for (Obstaculo o : scenery.getObstaculos()) {
-				obstaculos.add(o);
-			}
-			elementos.remove("obstaculos");
-			elementos.put("obstaculos", obstaculos);
+			elementos.put("obstaculos", scenery.getObstaculos());
+			elementos.put("out", scenery.getOut());
 			for (ArrayList<Elemento> elements : elementos.values()) {
 				elements.remove(elemento);
 			}

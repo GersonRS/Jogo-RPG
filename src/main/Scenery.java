@@ -32,12 +32,12 @@ public class Scenery {
 
 	private Rectangle2D.Double pos;
 	private String name;
-	private HashMap<String, Integer> destino;
+	private HashMap<Integer, String> destino;
 	private int width, height;
 	private int tileWidth;
 	private int tileHeight;
 	private String source;
-	private HashMap<String, ArrayList<Obstaculo>> obstaculos;
+	private HashMap<String, ArrayList<Elemento>> obstaculos;
 	private HashMap<String, int[][]> camadas;
 	private HashMap<String, String> datas;
 	private HashMap<String, BufferedImage> layers;
@@ -58,10 +58,10 @@ public class Scenery {
 	public Scenery(String diretorio) {
 		this.datas = new HashMap<String, String>();
 		this.camadas = new HashMap<String, int[][]>();
-		this.obstaculos = new HashMap<String, ArrayList<Obstaculo>>();
+		this.obstaculos = new HashMap<String, ArrayList<Elemento>>();
 		this.layersBase = new ArrayList<String>();
 		this.layersSuperficie = new ArrayList<String>();
-		this.destino = new HashMap<String, Integer>();
+		this.destino = new HashMap<Integer, String>();
 		pos = new Rectangle2D.Double();
 		carregaCenario(diretorio);
 		try {
@@ -119,7 +119,7 @@ public class Scenery {
 		for (Map.Entry<String, int[][]> entry : camadas.entrySet()) {
 			BufferedImage layer = new BufferedImage((int) pos.width,
 					(int) pos.height, BufferedImage.TYPE_4BYTE_ABGR);
-			ArrayList<Obstaculo> obs = new ArrayList<Obstaculo>();
+			ArrayList<Elemento> obs = new ArrayList<Elemento>();
 			for (int i = 0; i < height; i++) {
 				for (int j = 0; j < width; j++) {
 					int tile = (entry.getValue()[i][j] != 0) ? (entry
@@ -149,9 +149,9 @@ public class Scenery {
 						obs.add(o);
 					}
 
-					layers.put(entry.getKey(), layer);
 				}
 			}
+			layers.put(entry.getKey(), layer);
 			if (entry.getKey().equalsIgnoreCase("obstaculos"))
 				obstaculos.put(entry.getKey(), obs);
 			else if (entry.getKey().equalsIgnoreCase("in"))
@@ -325,7 +325,7 @@ public class Scenery {
 	 * 
 	 * @return ArrayList<Obstaculo>
 	 */
-	public ArrayList<Obstaculo> getObstaculos() {
+	public ArrayList<Elemento> getObstaculos() {
 		return obstaculos.get("obstaculos");
 	}
 
@@ -334,7 +334,7 @@ public class Scenery {
 	 * 
 	 * @return ArrayList<Obstaculo>
 	 */
-	public ArrayList<Obstaculo> getIn() {
+	public ArrayList<Elemento> getIn() {
 		return obstaculos.get("in");
 	}
 
@@ -343,7 +343,7 @@ public class Scenery {
 	 * 
 	 * @return ArrayList<Obstaculo>
 	 */
-	public ArrayList<Obstaculo> getOut() {
+	public ArrayList<Elemento> getOut() {
 		return obstaculos.get("out");
 	}
 
@@ -357,12 +357,15 @@ public class Scenery {
 	 * 
 	 * @return void
 	 */
-	public void addDestino(String cenario, int local) {
-		destino.put(cenario, local);
+	public void addTeleport(String cenario, int local) {
+		destino.put(local, cenario);
 	}
 
-	public HashMap<String, Integer> getDestino() {
-		return destino;
+	public String getDestino(int local) {
+		if (destino.containsKey(local)) {
+			return destino.get(local);
+		}
+		return "";
 	}
-	
+
 }

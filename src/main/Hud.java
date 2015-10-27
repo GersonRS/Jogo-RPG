@@ -41,6 +41,18 @@ public class Hud {
 	public void pintaHud(Graphics2D g) {		
 		g.drawImage(hud, 0, 0, null);
 		principal.getInventario().renderInventario(g);
+		g.setColor(Color.LIGHT_GRAY);
+		g.fillRect(579, 529, 181, 31);
+		g.setColor(Color.BLUE);
+		g.drawRect(579, 529, 181, 31);
+		g.setColor(Color.YELLOW);
+		g.fillRect(580, 530, ((principal.exp * 180) / principal.expMax), 30);
+		g.setColor(Color.BLUE);
+		g.drawString("Experiencia obtida", 625, 515);
+		g.setColor(Color.BLUE);
+		g.drawString(principal.exp+" / "+principal.expMax, 650, 550);
+		g.drawString("Nivel: "+principal.level, 600, 490);
+		
 	}
 
 	public static Image getRoundImage(Image imageSource, int x, int y) {
