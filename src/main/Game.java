@@ -316,17 +316,18 @@ public abstract class Game implements Runnable, Iteracao {
 		}
 		for (int i = 0; i < out.size(); i++) {
 			if (out.get(i).ativo) {
-				double difX = (out.get(i).getColisao().getX() + (out.get(i).getColisao()
-						.getWidth() / 2))
-						- (elemento.getColisao().getX() + (out.get(i).getColisao()
-								.getWidth() / 2));
-				double difY = (out.get(i).getColisao().getY() + (out.get(i).getColisao()
-						.getHeight() / 2))
-						- (elemento.getColisao().getY() + (out.get(i).getColisao()
-								.getHeight() / 2));
+				double difX = (out.get(i).getColisao().getX() + (out.get(i)
+						.getColisao().getWidth() / 2))
+						- (elemento.getColisao().getX() + (out.get(i)
+								.getColisao().getWidth() / 2));
+				double difY = (out.get(i).getColisao().getY() + (out.get(i)
+						.getColisao().getHeight() / 2))
+						- (elemento.getColisao().getY() + (out.get(i)
+								.getColisao().getHeight() / 2));
 				double distancia = Math.sqrt((difX * difX) + (difY * difY));
 				if (distancia < 64)
-					if (out.get(i).getColisao().intersects(elemento.getColisao())) {
+					if (out.get(i).getColisao()
+							.intersects(elemento.getColisao())) {
 						String destino = cenarios.get(currentCenario)
 								.getDestino(out.get(i).id);
 						if (destino != "")
@@ -372,20 +373,24 @@ public abstract class Game implements Runnable, Iteracao {
 	}
 
 	public void updateKeys() {
-		for (Integer keyCode : keyCache.keySet()) {
-			if (isJustPressed(keyCode)) {
-				keyCache.put(keyCode, KEY_PRESSED);
+		try {
+			for (Integer keyCode : keyCache.keySet()) {
+				if (isJustPressed(keyCode)) {
+					keyCache.put(keyCode, KEY_PRESSED);
+				}
 			}
-		}
-		for (Integer keyCode : releasedKeys) {
-			keyCache.put(keyCode, KEY_RELEASED);
-		}
-		for (Integer keyCode : pressedKeys) {
-			if (isReleased(keyCode)) {
-				keyCache.put(keyCode, KEY_JUST_PRESSED);
-			} else {
-				keyCache.put(keyCode, KEY_PRESSED);
+			for (int i = 0; i < releasedKeys.size(); i++) {
+				keyCache.put(releasedKeys.get(i), KEY_RELEASED);
 			}
+			for (int i = 0; i < pressedKeys.size(); i++) {
+				if (isReleased(pressedKeys.get(i))) {
+					keyCache.put(pressedKeys.get(i), KEY_JUST_PRESSED);
+				} else {
+					keyCache.put(pressedKeys.get(i), KEY_PRESSED);
+				}
+			}
+		} catch (NullPointerException e) {
+			System.out.println("aff");
 		}
 		pressedKeys.clear();
 		releasedKeys.clear();
@@ -492,7 +497,7 @@ public abstract class Game implements Runnable, Iteracao {
 	protected void configLayerBase(String cenario, String layer) {
 		cenarios.get(cenario).configLayerBase(layer);
 	}
-	
+
 	protected void configLayerBase(String layer) {
 		cenarios.get(currentCenario).configLayerBase(layer);
 	}
@@ -516,12 +521,12 @@ public abstract class Game implements Runnable, Iteracao {
 	protected void renderCenario(Graphics2D g, String camada) {
 		cenarios.get(currentCenario).render(g, camada);
 	}
-	
-	protected void removerObstaculos(int id){
+
+	protected void removerObstaculos(int id) {
 		ArrayList<Elemento> o = elementos.get("obstaculos");
 		ArrayList<Elemento> r = new ArrayList<Elemento>();
 		for (int i = 0; i < o.size(); i++) {
-			if(o.get(i).id==id){
+			if (o.get(i).id == id) {
 				r.add(o.get(i));
 			}
 		}

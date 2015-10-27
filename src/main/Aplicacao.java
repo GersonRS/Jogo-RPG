@@ -47,14 +47,16 @@ public class Aplicacao extends Game {
 		addTeleport("floresta 4", "caverna 1", 6);
 		addTeleport("floresta 5", "floresta 1", 5);
 		addTeleport("floresta 5", "floresta 4", 7);
+		addTeleport("caverna 1", "floresta 4", 3);
+		addTeleport("caverna 1", "floresta 4", 6);
 		addElementoPrincipal("cidade", new Principal(180, 100, 23, 55, 6,
 				"personagem"));
 		configLayers();
 		// addNPCs();
-		// addPecasGeometricas();
+		 addPecasGeometricas();
 		hud = new Hud(getElementoPrincipal());
 		dialogo = new ArrayList<String>();
-		currentCenario("floresta 4");
+		currentCenario("cidade");
 		// playSoundLoop("som.wav");
 	}
 
@@ -180,7 +182,7 @@ public class Aplicacao extends Game {
 	}
 
 	public void addPecasGeometricas() {
-		addElemento("cidade", new Triangulo(0, 233, 1));
+		addElemento("floresta 1", new Triangulo(0, 233, 1));
 	}
 
 	public void configLayers() {
@@ -267,7 +269,7 @@ public class Aplicacao extends Game {
 						"Monstro",
 						new Missao(
 								1,
-								"Que bom que você esta aqui, eu esqueci um objeto la na floresta,\npor favor pegou pra mim.\n só pra você saber é um objeto na forma de um tringulo",
+								"Que bom que você esta aqui, eu esqueci um objeto la na floresta,\npor favor pegou pra mim.\nsó pra você saber é um objeto na forma de um tringulo",
 								100, mis1, -1, "")));
 		int[] mis5 = { 2, 3 };
 		addElemento(
