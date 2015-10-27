@@ -51,7 +51,7 @@ public abstract class PecaGeometrica extends Elemento {
 			break;
 		}
 		case 6: {
-			cor = (Color.DARK_GRAY);
+			cor = (Color.GREEN);
 			break;
 		}
 		case 7: {
