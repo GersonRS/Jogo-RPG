@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class Aplicacao extends Game1 {
+public class Aplicacao extends Game {
 
 	ArrayList<Missao> missoes;
 	Hud hud;
@@ -43,8 +43,8 @@ public class Aplicacao extends Game1 {
 		addTeleport("floresta 4", "floresta 3", 2);
 		addTeleport("floresta 4", "floresta 2", 4);
 		addTeleport("floresta 4", "floresta 5", 7);
-		addTeleport("floresta 4", "caverna 1", 6);
 		addTeleport("floresta 4", "caverna 1", 3);
+		addTeleport("floresta 4", "caverna 1", 6);
 		addTeleport("floresta 5", "floresta 1", 5);
 		addTeleport("floresta 5", "floresta 4", 7);
 		addElementoPrincipal("cidade", new Principal(180, 100, 23, 55, 6,
@@ -54,7 +54,7 @@ public class Aplicacao extends Game1 {
 		// addPecasGeometricas();
 		hud = new Hud(getElementoPrincipal());
 		dialogo = new ArrayList<String>();
-		currentCenario("cidade");
+		currentCenario("floresta 4");
 		// playSoundLoop("som.wav");
 	}
 
@@ -184,7 +184,13 @@ public class Aplicacao extends Game1 {
 	}
 
 	public void configLayers() {
-		// configuração do cenario floresta 1
+		// configuração do cenario caverna 1
+		configLayerBase("caverna 1", "vacuo");
+		configLayerBase("caverna 1", "chao");
+		configLayerBase("caverna 1", "pedras");
+		configLayerBase("caverna 1", "paredes");
+		configLayerSuperficie("caverna 1", "folhas");
+		// configuração do cenario cidade
 		configLayerBase("cidade", "grama");
 		configLayerBase("cidade", "areia");
 		configLayerBase("cidade", "casas");
@@ -204,6 +210,47 @@ public class Aplicacao extends Game1 {
 		configLayerSuperficie("floresta 1", "morros 2");
 		configLayerSuperficie("floresta 1", "folhas 1");
 		configLayerSuperficie("floresta 1", "folhas 2");
+		// configuração do cenario floresta 2
+		configLayerBase("floresta 2", "grama");
+		configLayerBase("floresta 2", "penhasco 1");
+		configLayerBase("floresta 2", "penhasco 2");
+		configLayerBase("floresta 2", "areia");
+		configLayerBase("floresta 2", "morros 1");
+		configLayerBase("floresta 2", "troncos");
+		configLayerSuperficie("floresta 2", "folhas 1");
+		configLayerSuperficie("floresta 2", "folhas 2");
+		// configuração do cenario floresta 3
+		configLayerBase("floresta 3", "grama");
+		configLayerBase("floresta 3", "areia");
+		configLayerBase("floresta 3", "penhasco 1");
+		configLayerBase("floresta 3", "penhasco 2");
+		configLayerBase("floresta 3", "ponte");
+		configLayerBase("floresta 3", "troncos");
+		configLayerBase("floresta 3", "pedras");
+		configLayerBase("floresta 3", "morros 1");
+		configLayerSuperficie("floresta 3", "folhas 1");
+		configLayerSuperficie("floresta 3", "folhas 2");
+		// configuração do cenario floresta 4
+		configLayerBase("floresta 4", "grama");
+		configLayerBase("floresta 4", "penhasco 1");
+		configLayerBase("floresta 4", "penhasco 2");
+		configLayerBase("floresta 4", "areia");
+		configLayerBase("floresta 4", "morros 1");
+		configLayerBase("floresta 4", "morros 2");
+		configLayerBase("floresta 4", "ponte");
+		configLayerBase("floresta 4", "troncos");
+		configLayerBase("floresta 4", "pedras");
+		configLayerSuperficie("floresta 4", "folhas 1");
+		configLayerSuperficie("floresta 4", "folhas 2");
+		// configuração do cenario floresta 1
+		configLayerBase("floresta 5", "grama");
+		configLayerBase("floresta 5", "areia");
+		configLayerBase("floresta 5", "morros");
+		configLayerBase("floresta 5", "troncos");
+		configLayerBase("floresta 5", "pedras");
+		configLayerSuperficie("floresta 5", "folhas 1");
+		configLayerSuperficie("floresta 5", "folhas 2");
+
 	}
 
 	public void addNPCs() {

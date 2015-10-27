@@ -17,7 +17,7 @@ public class NPC extends Personagem {
 	public void mover(Iteracao i) {
 	}
 
-	public String getDialogo(Game1 game) {
+	public String getDialogo(Game game) {
 		if (missao.isAtiva()) {
 			if (missao.isConcluida()) {
 				return "voce já completou esta missão, fale com outra pessoa \ntalvez ele tenham alguma missão pra você.";
