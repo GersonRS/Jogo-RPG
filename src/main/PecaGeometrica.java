@@ -17,14 +17,16 @@ public abstract class PecaGeometrica extends Elemento {
 	protected Color cor;
 	private Random r;
 	protected BufferedImage image;
+	protected int tamanho;
 
 	public PecaGeometrica(int x, int y, int id) {
 		super(x, y, 32, 32);
+		this.r = new Random();
 		this.poligono = new Polygon();
+		this.tamanho = r.nextInt(10) + 1;
 		this.id = id;
 		this.ativo = true;
 		this.visivel = true;
-		this.r = new Random();
 		switch (r.nextInt(10)) {
 		case 0: {
 			cor = (Color.BLUE);
@@ -72,6 +74,12 @@ public abstract class PecaGeometrica extends Elemento {
 		image = new BufferedImage((int) pos.width, (int) pos.height,
 				BufferedImage.TYPE_INT_ARGB);
 
+	}
+
+	protected abstract double calculaArea();
+
+	public int getTamanho() {
+		return tamanho;
 	}
 
 	public int getId() {

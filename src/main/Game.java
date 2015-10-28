@@ -61,7 +61,7 @@ public abstract class Game implements Runnable, Iteracao {
 	private final int BELOW = 2;
 	private final int LEFT = 3;
 
-	private JFrame mainWindow;
+	protected JFrame mainWindow;
 	private BufferStrategy bufferStrategy;
 	protected BufferedImage tela;
 	protected int width = 800;
@@ -137,6 +137,7 @@ public abstract class Game implements Runnable, Iteracao {
 		mainWindow.setLocationRelativeTo(null);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainWindow.setUndecorated(true);
+		mainWindow.setResizable(false);
 		mainWindow.setIgnoreRepaint(true);
 		mainWindow.setPreferredSize(new Dimension(width, height));
 		mainWindow.setVisible(true);

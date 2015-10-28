@@ -49,14 +49,14 @@ public class Aplicacao extends Game {
 		addTeleport("floresta 5", "floresta 4", 7);
 		addTeleport("caverna 1", "floresta 4", 3);
 		addTeleport("caverna 1", "floresta 4", 6);
-		addElementoPrincipal("cidade", new Principal(670, 606, 23, 55, 6,
+		addElementoPrincipal("cidade", new Principal(196, 100, 23, 55, 6,
 				"personagem"));
 		configLayers();
-		// addNPCs();
+		addNPCs();
 		addPecasGeometricas();
 		hud = new Hud(getElementoPrincipal());
 		dialogo = new ArrayList<String>();
-		currentCenario("floresta 4");
+		currentCenario("cidade");
 		cenarios.get(currentCenario).getPos().y = (elemento.pos.y - height / 3)
 				* -1;
 		cenarios.get(currentCenario).getPos().x = (elemento.pos.x - width / 3)
@@ -90,10 +90,10 @@ public class Aplicacao extends Game {
 						if (isJustPressed(KeyEvent.VK_ENTER)) {
 							if (getElementoPrincipal().getInventario()
 									.getPecasgeometricas().size() < getElementoPrincipal()
-									.getInventario().getNUM_MAX()){
+									.getInventario().getNUM_MAX()) {
 								getElementoPrincipal()
-								.getInventario()
-								.add((PecaGeometrica) getElementoPrincipal().collidingEntities[j]);
+										.getInventario()
+										.add((PecaGeometrica) getElementoPrincipal().collidingEntities[j]);
 								getElementoPrincipal().collidingEntities[j].ativo = false;
 							}
 						}
@@ -186,28 +186,6 @@ public class Aplicacao extends Game {
 
 	}
 
-	public void addPecasGeometricas() {
-		addElemento("floresta 1", new Triangulo(10, 233, 1));
-		addElemento("cidade", new Quadrado(1100, 1138, 2));
-		addElemento("cidade", new Triangulo(1056, 170, 3));
-		addElemento("cidade", new Quadrado(50, 800, 4));
-		addElemento("floresta 1", new Triangulo(32, 470, 5));
-		addElemento("floresta 1", new Quadrado(766, 490, 6));
-		addElemento("floresta 1", new Triangulo(10, 1024, 7));
-		addElemento("floresta 2", new Quadrado(180, 360, 8));
-		addElemento("floresta 2", new Triangulo(570, 128, 9));
-		addElemento("floresta 2", new Quadrado(200, 660, 10));
-		addElemento("floresta 2", new Triangulo(232, 660, 11));
-		addElemento("floresta 3", new Quadrado(320, 192, 12));
-		addElemento("floresta 3", new Triangulo(1216, 256, 13));
-		addElemento("floresta 3", new Quadrado(1216, 736, 14));
-		addElemento("floresta 3", new Triangulo(928, 576, 15));
-		addElemento("floresta 4", new Quadrado(704, 606, 14));
-		addElemento("floresta 4", new Triangulo(160, 638, 15));
-		addElemento("caverna 1", new Quadrado(160, 704, 14));
-		addElemento("caverna 1", new Triangulo(572, 864, 15));
-	}
-
 	public void configLayers() {
 		// configuração do cenario caverna 1
 		configLayerBase("caverna 1", "vacuo");
@@ -278,8 +256,35 @@ public class Aplicacao extends Game {
 
 	}
 
+	public void addPecasGeometricas() {
+		addElemento("floresta 1", new Triangulo(10, 233, 1));
+		addElemento("cidade", new Quadrado(1100, 1138, 2));
+		addElemento("cidade", new Triangulo(1056, 170, 3));
+		addElemento("cidade", new Quadrado(50, 800, 4));
+		addElemento("floresta 1", new Triangulo(32, 470, 5));
+		addElemento("floresta 1", new Quadrado(766, 490, 6));
+		addElemento("floresta 1", new Triangulo(10, 1024, 7));
+		addElemento("floresta 2", new Quadrado(180, 360, 8));
+		addElemento("floresta 2", new Triangulo(570, 128, 9));
+		addElemento("floresta 2", new Quadrado(200, 660, 10));
+		addElemento("floresta 2", new Triangulo(232, 660, 11));
+		addElemento("floresta 3", new Quadrado(320, 192, 12));
+		addElemento("floresta 3", new Triangulo(1216, 256, 13));
+		addElemento("floresta 3", new Quadrado(1216, 736, 14));
+		addElemento("floresta 3", new Triangulo(928, 576, 15));
+		addElemento("floresta 4", new Quadrado(128, 960, 16));
+		addElemento("floresta 4", new Triangulo(512, 320, 17));
+		addElemento("floresta 4", new Quadrado(960, 800, 18));
+		addElemento("floresta 5", new Triangulo(928, 224, 19));
+		addElemento("floresta 5", new Quadrado(160, 480, 20));
+		addElemento("caverna 1", new Triangulo(540, 864, 21));
+		addElemento("caverna 1", new Quadrado(160, 704, 22));
+		addElemento("caverna 1", new Triangulo(448, 96, 23));
+		addElemento("cidade", new Quadrado(768, 0, 24));
+	}
+
 	public void addNPCs() {
-		int[] mis1 = { 1 };
+		int[] mis1 = { 23 };
 		addElemento(
 				"cidade",
 				new NPC(
@@ -293,27 +298,57 @@ public class Aplicacao extends Game {
 						new Missao(
 								1,
 								"Que bom que você esta aqui, eu esqueci um objeto la na floresta,\npor favor pegou pra mim.\nsó pra você saber é um objeto na forma de um tringulo",
-								100, mis1, -1, "")));
-		int[] mis5 = { 2, 3 };
+								100, mis1, 0, "")));
+		int[] mis2 = { 1, 3 };
 		addElemento(
-				"floresta 1",
+				"cidade",
 				new NPC(
-						460,
-						233,
+						256,
+						736,
 						27,
 						57,
-						3,
+						2,
 						4,
 						"Monstro",
 						new Missao(
 								1,
-								"Me entregue 2 peças QUADRADAS para que\neu possa consertar a ponte.",
-								0, mis5, 104, "ponte B")));
-		int[] mis6 = { 4, 5 };
+								"Hummm, sera que você pode me arranjar dois TRIANGULOS? eu estou precisando muito\nse você conseguir eu te dou um QUADRADO em troca.",
+								100, mis2, -30, "ponte A")));
+		int[] mis3 = { 2, 4 };
+		addElemento(
+				"cidade",
+				new NPC(
+						896,
+						544,
+						27,
+						57,
+						2,
+						4,
+						"Monstro",
+						new Missao(
+								3,
+								"Opa desculpa a ponte ta quebrada, mas se você me conseguir dois QUADRADOS\neu consigo conserta-la para vc poder passar.",
+								100, mis3, 102, "ponte A")));
+		int[] mis5 = { 2, 30 };
 		addElemento(
 				"floresta 1",
 				new NPC(
-						230,
+						396,
+						233,
+						27,
+						57,
+						0,
+						4,
+						"Monstro",
+						new Missao(
+								1,
+								"Opa desculpa a ponte ta quebrada, mas se você me conseguir dois QUADRADOS\neu consigo conserta-la para vc poder passar.",
+								0, mis5, 102, "ponte A")));
+		int[] mis100 = { 40, 50 };
+		addElemento(
+				"floresta 1",
+				new NPC(
+						660,
 						233,
 						27,
 						57,
@@ -323,7 +358,7 @@ public class Aplicacao extends Game {
 						new Missao(
 								1,
 								"Me entregue 2 peça TRIANGULARES para que\neu possa consertar esta ponte.",
-								0, mis6, 106, "ponte A")));
+								0, mis100, 103, "ponte B")));
 	}
 
 	public static void main(String[] args) {

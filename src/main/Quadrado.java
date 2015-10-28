@@ -3,10 +3,8 @@ package main;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-
 public class Quadrado extends PecaGeometrica {
 
-	
 	public Quadrado(int x, int y, int id) {
 		super(x, y, id);
 		poligono.addPoint(5, 5);
@@ -20,9 +18,16 @@ public class Quadrado extends PecaGeometrica {
 
 		g2.clip(poligono);
 		g2.setColor(cor);
-		g2.fillRect(0,0,32,32);
+		g2.fillRect(0, 0, 32, 32);
 		g2.setStroke(stroke);
 	}
+	
+
+	@Override
+	protected double calculaArea() {
+		return Math.pow(tamanho, 2);
+	}
+
 
 	@Override
 	public void mover(Iteracao i) {
