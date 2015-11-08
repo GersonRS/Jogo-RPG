@@ -1,4 +1,4 @@
-package main;
+package game;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -8,6 +8,8 @@ import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+
+import core.Elemento;
 
 public abstract class PecaGeometrica extends Elemento {
 
@@ -25,7 +27,7 @@ public abstract class PecaGeometrica extends Elemento {
 		this.poligono = new Polygon();
 		this.tamanho = r.nextInt(10) + 1;
 		this.id = id;
-		this.ativo = true;
+		this.setAtivo(true);
 		this.visivel = true;
 		switch (r.nextInt(10)) {
 		case 0: {
@@ -71,7 +73,7 @@ public abstract class PecaGeometrica extends Elemento {
 		default:
 			break;
 		}
-		image = new BufferedImage((int) pos.width, (int) pos.height,
+		image = new BufferedImage((int) getPos().width, (int) getPos().height,
 				BufferedImage.TYPE_INT_ARGB);
 
 	}
@@ -88,11 +90,11 @@ public abstract class PecaGeometrica extends Elemento {
 
 	@Override
 	public Rectangle2D.Double getColisao() {
-		return pos;
+		return getPos();
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		g.drawImage(image, (int) pos.x, (int) pos.y, null);
+		g.drawImage(image, (int) getPos().x, (int) getPos().y, null);
 	}
 }

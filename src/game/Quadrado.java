@@ -1,17 +1,18 @@
-package main;
+package game;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.Random;
 
-public class Triangulo extends PecaGeometrica {
+import core.Iteracao;
 
-	public Triangulo(int x, int y, int id) {
+public class Quadrado extends PecaGeometrica {
+
+	public Quadrado(int x, int y, int id) {
 		super(x, y, id);
-		Random r = new Random();
-		poligono.addPoint(r.nextInt(2)==0?5:26, 5);
-		poligono.addPoint(5, 26);
+		poligono.addPoint(5, 5);
+		poligono.addPoint(26, 5);
 		poligono.addPoint(26, 26);
+		poligono.addPoint(5, 26);
 		Graphics2D g2 = (Graphics2D) image.getGraphics();
 
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -26,7 +27,7 @@ public class Triangulo extends PecaGeometrica {
 
 	@Override
 	protected double calculaArea() {
-		return Math.pow(tamanho, 2)/2;
+		return Math.pow(tamanho, 2);
 	}
 
 

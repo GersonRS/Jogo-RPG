@@ -1,4 +1,7 @@
-package main;
+package game;
+
+import core.Iteracao;
+import core.Personagem;
 
 public class Rival extends Personagem {
 

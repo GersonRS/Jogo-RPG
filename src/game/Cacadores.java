@@ -1,6 +1,9 @@
-package main;
+package game;
 
 import java.util.Random;
+
+import core.Iteracao;
+import core.Personagem;
 
 public class Cacadores extends Personagem {
 

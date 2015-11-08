@@ -1,17 +1,46 @@
-package main;
+package game;
 
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import core.Iteracao;
+import core.Personagem;
 
 public class Principal extends Personagem {
 
 	private Inventario inventario;
+	protected BufferedImage rosto;
+	protected int strength;
+	protected int intelligence;
+	protected int agility;
+	protected int dexterity;
+	protected int hp, hpMax;
+	protected int mp, mpMax;
+	protected int level;
+	protected int exp, expMax;
+	
 
 	public Principal(int x, int y, int width, int height, int numFrames,
 			String img) {
 		super(x, y, width, height, numFrames, img);
-		numFrames = 6;
-		direction = 2;
+		this.hpMax = 250;
+		this.hp = 250;
+		this.mpMax = 50;
+		this.mp = 50;
+		this.level = 1;
+		this.expMax = 100;
+		this.exp = 0;
 		inventario = new Inventario();
+
+		try {
+			rosto = ImageIO.read(getClass().getClassLoader().getResource(
+					"images/" + img + "Rosto.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
