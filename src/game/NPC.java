@@ -13,7 +13,7 @@ public class NPC extends Personagem {
 
 	private String menssagem;
 	private Missao missao;
-	private MyDialog d;
+	private Componente d;
 	protected BufferedImage rosto;
 
 	public NPC(int x, int y, int width, int height, int direcao, int numFrames,
@@ -43,7 +43,7 @@ public class NPC extends Personagem {
 			} else {
 				if (missao.concluirMissao(p.getInventario()
 						.getPecasgeometricas())) {
-					d = new MyDialog(game.getMainWindow(), true, missao, p
+					d = new MyDialog(game.getMainWindow(), false, missao, p
 							.getInventario().getPecasgeometricas());
 					if (d.isRetorno()) {
 						missao.setConcluida(true);

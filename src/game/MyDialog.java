@@ -13,7 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 
-public class MyDialog extends JDialog {
+public class MyDialog extends JDialog implements Componente{
 
 	private boolean retorno;
 	double resposta = 0.0f;
@@ -129,6 +129,7 @@ public class MyDialog extends JDialog {
 		setVisible(true);
 	}
 
+	@Override
 	public boolean isRetorno() {
 		return retorno;
 	}
