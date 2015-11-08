@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 
 /**
@@ -42,7 +40,7 @@ import javax.swing.JFrame;
  * <code> Game </ code> é umaclasse abstrata.
  */
 
-public abstract class Game implements Runnable, Iteracao {
+public abstract class Game implements Runnable, Interacao {
 
 	private HashMap<Integer, Integer> keyCache;
 	private ArrayList<Integer> pressedKeys;
@@ -62,9 +60,9 @@ public abstract class Game implements Runnable, Iteracao {
 	private final int BELOW = 2;
 	private final int LEFT = 3;
 
-	private JFrame mainWindow;
+	protected JFrame mainWindow;
 	private BufferStrategy bufferStrategy;
-	protected BufferedImage tela;
+	private BufferedImage tela;
 	protected int width = 800;
 	protected int height = 600;
 
@@ -72,11 +70,9 @@ public abstract class Game implements Runnable, Iteracao {
 	private double expectedNanosPerTick;
 	private int maxFrameSkip;
 
-	static public final double NANOS_IN_ONE_SECOND = 1e9;
-	protected int ticksPerSecond;
-	protected long previousNanotime;
-	protected int countedTicks;
-	protected int totalTicks;
+	static private final double NANOS_IN_ONE_SECOND = 1e9;
+	private long previousNanotime;
+	private int totalTicks;
 	private boolean running;
 
 	protected Elemento elemento;
@@ -104,7 +100,6 @@ public abstract class Game implements Runnable, Iteracao {
 	public void run() {
 		running = true;
 		Graphics2D g;
-		// int tick = 0;
 		inicializacao();
 		expectedTPS = 60;
 		expectedNanosPerTick = NANOS_IN_ONE_SECOND / expectedTPS;
@@ -133,22 +128,20 @@ public abstract class Game implements Runnable, Iteracao {
 	 * Este evento ocorre antes da primeira iteração do ciclo, e apenas uma vez.
 	 */
 	private void inicializacao() {
-		setMainWindow(new JFrame("Desenvolvimento de Jogos Digitais"));
-		getMainWindow().setSize(width, height);
-		getMainWindow().setLocationRelativeTo(null);
-		getMainWindow().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		getMainWindow().setUndecorated(true);
-		getMainWindow().setResizable(false);
-		getMainWindow().setIgnoreRepaint(true);
-		getMainWindow().setPreferredSize(new Dimension(width, height));
-		getMainWindow().setVisible(true);
-		getMainWindow().createBufferStrategy(2);
-		getMainWindow().setFocusable(true);
-		getMainWindow().requestFocus();
+		this.mainWindow = new JFrame("Desenvolvimento de Jogos Digitais");
+		this.mainWindow.setSize(width, height);
+		this.mainWindow.setLocationRelativeTo(null);
+		this.mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.mainWindow.setUndecorated(true);
+		this.mainWindow.setResizable(false);
+		this.mainWindow.setIgnoreRepaint(true);
+		this.mainWindow.setPreferredSize(new Dimension(width, height));
+		this.mainWindow.setVisible(true);
+		this.mainWindow.createBufferStrategy(2);
+		this.mainWindow.setFocusable(true);
+		this.mainWindow.requestFocus();
 
 		previousNanotime = System.nanoTime();
-		countedTicks = 0;
-		ticksPerSecond = 0;
 		totalTicks = 0;
 
 		ArrayList<Elemento> obs = new ArrayList<Elemento>();
@@ -158,9 +151,9 @@ public abstract class Game implements Runnable, Iteracao {
 		elementos.put("obstaculos", obs);
 		elementos.put("out", out);
 
-		bufferStrategy = getMainWindow().getBufferStrategy();
+		bufferStrategy = this.mainWindow.getBufferStrategy();
 
-		getMainWindow().addKeyListener(this);
+		this.mainWindow.addKeyListener(this);
 
 		onLoad();
 	}
@@ -172,7 +165,6 @@ public abstract class Game implements Runnable, Iteracao {
 	 */
 	private void logica(int tick) {
 
-		countedTicks++;
 		totalTicks++;
 		updateTime();
 
@@ -204,8 +196,6 @@ public abstract class Game implements Runnable, Iteracao {
 
 	private void updateTime() {
 		if (System.nanoTime() - previousNanotime > NANOS_IN_ONE_SECOND) {
-			ticksPerSecond = countedTicks;
-			countedTicks = 0;
 			previousNanotime = System.nanoTime();
 		}
 	}
@@ -336,7 +326,8 @@ public abstract class Game implements Runnable, Iteracao {
 						if (destino != "")
 							for (Elemento in : cenarios.get(destino).getIn()) {
 								if (in.id == out.get(i).id) {
-									nextPos.y = in.getPos().y - in.getPos().height - 5;
+									nextPos.y = in.getPos().y
+											- in.getPos().height - 5;
 									nextPos.x = in.getPos().x + 5;
 									nextCenerio = destino;
 									transition = true;
@@ -401,7 +392,6 @@ public abstract class Game implements Runnable, Iteracao {
 	}
 
 	public void keyTyped(KeyEvent e) {
-		// Rotina nÃ£o utilizada. Evento de tecla teclada.
 	}
 
 	public void keyPressed(KeyEvent e) {
@@ -455,12 +445,14 @@ public abstract class Game implements Runnable, Iteracao {
 
 	abstract protected void onRenderHud(Graphics2D g);
 
-	protected void playSoundLoop(String fileName) {
+	protected void playSound(String fileName,boolean loop) {
 		try {
-			Audio.getInstance().playLoop();
-		} catch (IOException ioe) {
-		} catch (UnsupportedAudioFileException e) {
-		} catch (LineUnavailableException e) {
+			if(loop)
+				Audio.getInstance().loadAudio(fileName).loop();
+			else 
+				Audio.getInstance().loadAudio(fileName).play();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -578,8 +570,8 @@ public abstract class Game implements Runnable, Iteracao {
 		return mainWindow;
 	}
 
-	public void setMainWindow(JFrame mainWindow) {
-		this.mainWindow = mainWindow;
+	public BufferedImage getTela() {
+		return tela;
 	}
 	
 }

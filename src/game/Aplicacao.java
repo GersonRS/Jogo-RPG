@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -55,14 +56,18 @@ public class Aplicacao extends Game {
 		addTeleport("floresta 5", "floresta 4", 7);
 		addTeleport("caverna 1", "floresta 4", 3);
 		addTeleport("caverna 1", "floresta 4", 6);
-		addElementoPrincipal(new Principal(196, 100, 23, 55, 6, "personagem"));
+		try {
+			addElementoPrincipal(new Principal(196, 100, 23, 55, 6, "personagem"));
+			addNPCs();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		configLayers();
-		addNPCs();
 		addPecasGeometricas();
 		hud = new Hud((Principal) getElementoPrincipal());
 		dialogo = new ArrayList<String>();
 		currentCenario("cidade");
-		// playSoundLoop("som.wav");
+		playSound("som.wav",false);
 	}
 
 	@Override
@@ -325,7 +330,7 @@ public class Aplicacao extends Game {
 		addElemento("cidade", new Quadrado(768, 0, 24));
 	}
 
-	public void addNPCs() {
+	public void addNPCs() throws IOException {
 		int[] mis10 = { 23 };
 		addElemento(
 				"cidade",

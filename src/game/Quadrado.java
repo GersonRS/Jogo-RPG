@@ -3,7 +3,7 @@ package game;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import core.Iteracao;
+import core.Interacao;
 
 public class Quadrado extends PecaGeometrica {
 
@@ -32,7 +32,7 @@ public class Quadrado extends PecaGeometrica {
 
 
 	@Override
-	public void mover(Iteracao i) {
+	public void mover(Interacao i) {
 
 	}
 

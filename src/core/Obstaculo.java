@@ -3,8 +3,16 @@ package core;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
+/**
+ * 
+ * Classe que representa um obstaculo para algum elemento.
+ * 
+ */
 public class Obstaculo extends Elemento {
 
+	/**
+	 * Crie um novo Obstaculo.
+	 */
 	public Obstaculo(int x, int y, int width, int height, int id) {
 		super(x, y, width, height);
 		this.id = id;
@@ -18,7 +26,7 @@ public class Obstaculo extends Elemento {
 	}
 
 	@Override
-	public void mover(Iteracao i) {
+	public void mover(Interacao i) {
 
 	}
 

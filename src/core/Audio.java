@@ -6,32 +6,49 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
+/**
+ * 
+ * Controla todo audio do jogo. esta classe 
+ * prover um controle para executar algum audio.
+ * 
+ */
 public class Audio {
 	static private Audio instance;
 	private HashMap<String, AudioClip> clips;
 
+	/**
+	 * Crie um novo Audio.
+	 */
 	private Audio() {
 		clips = new HashMap<String, AudioClip>();
 	}
 
+	/**
+	 * 
+	 * metodo Singleton que retorna uma única instância de um Audio. 
+	 * 
+	 * @return Audio
+	 */
 	static public Audio getInstance() {
 		if (instance == null)
 			instance = new Audio();
 		return instance;
 	}
 
+	/**
+	 * 
+	 * carrega um arquivo de audio. 
+	 * 
+	 * @param fileName
+	 * 		nome do arquivo de audio.
+	 * 
+	 * @return AudioClip
+	 */
 	public AudioClip loadAudio(String fileName) throws IOException {
 		URL url = getClass().getClassLoader().getResource("audios/" + fileName);
 		if (url == null) {
-			throw new RuntimeException("O Ã¡udio /" + fileName
-					+ " nÃ£o foi encontrado.");
+			throw new RuntimeException("O Audio " + fileName
+					+ " não foi encontrado.");
 		} else {
 			if (clips.containsKey(fileName)) {
 				return clips.get(fileName);
@@ -42,20 +59,5 @@ public class Audio {
 				return clip;
 			}
 		}
-	}
-
-	public void playLoop() throws UnsupportedAudioFileException, IOException,
-			LineUnavailableException {
-		URL url = getClass().getClassLoader()
-				.getResource("audios/" + "som.wav");
-		AudioInputStream audioInputStream = AudioSystem
-				.getAudioInputStream(url);
-		Clip clip = AudioSystem.getClip();
-		clip.open(audioInputStream);
-		FloatControl gainControl = (FloatControl) clip
-				.getControl(FloatControl.Type.MASTER_GAIN);
-		gainControl.setValue(-20.0f);
-		// clip.start();
-		clip.loop(Clip.LOOP_CONTINUOUSLY);
 	}
 }

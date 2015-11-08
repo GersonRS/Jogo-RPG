@@ -8,6 +8,11 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+/**
+ * 
+ * Elemento Personagem especializado do jogo.
+ * 
+ */
 public abstract class Personagem extends Elemento {
 
 	protected BufferedImage image;
@@ -29,8 +34,26 @@ public abstract class Personagem extends Elemento {
 	private int stepInterval;
 	private int lastStepTick;
 
+	/**
+	 * 
+	 * Crie um novo Elemento.
+	 * 
+	 * @param x
+	 *            posição x do personagem
+	 * @param y
+	 *            posição y do personagem
+	 * @param width
+	 *            largura do personagem
+	 * @param height
+	 *            altura do personagem
+	 * @param numframes
+	 *            numero de frames que existe na sprite do personagem
+	 * @param img
+	 *            nome da imagem da sprite do personagem
+	 *            
+	 */
 	public Personagem(int x, int y, int width, int height, int numFrames,
-			String img) {
+			String img) throws IOException {
 		super(x, y, width, height);
 		this.numFrames = numFrames;
 		this.friction = 0.3;
@@ -43,13 +66,17 @@ public abstract class Personagem extends Elemento {
 		carregaImagem(img);
 	}
 
-	private void carregaImagem(String img) {
-		try {
-			image = ImageIO.read(getClass().getClassLoader().getResource(
-					"images/" + img + ".png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	/**
+	 * 
+	 * metodo que carrega a imagem da sprite do personagem.
+	 * 
+	 * @param img
+	 *            nome da imagem.
+	 * 
+	 */
+	private void carregaImagem(String img) throws IOException {
+		image = ImageIO.read(getClass().getClassLoader().getResource(
+				"images/" + img + ".png"));
 	}
 
 	@Override
@@ -70,8 +97,8 @@ public abstract class Personagem extends Elemento {
 		if (speed.y < 0) {
 			if (getCollidingEntities()[ABOVE] != null) {
 				getPos().y = getCollidingEntities()[ABOVE].getColisao().getY()
-						+ getCollidingEntities()[ABOVE].getColisao().getHeight()
-						- getColisao().getHeight() - 0.1;
+						+ getCollidingEntities()[ABOVE].getColisao()
+								.getHeight() - getColisao().getHeight() - 0.1;
 				speed.y = 0;
 				acceleration.y = 0;
 			} else {
@@ -107,7 +134,8 @@ public abstract class Personagem extends Elemento {
 			}
 		} else if (speed.x > 0) {
 			if (getCollidingEntities()[RIGHT] != null) {
-				getPos().x = getCollidingEntities()[RIGHT].getPos().x - getPos().width + 0.1;
+				getPos().x = getCollidingEntities()[RIGHT].getPos().x
+						- getPos().width + 0.1;
 				speed.x = 0;
 				acceleration.x = 0;
 			} else {
@@ -145,8 +173,12 @@ public abstract class Personagem extends Elemento {
 
 	@Override
 	public void render(Graphics2D g) {
-		g.drawImage(image, (int) (getPos().x), (int) (getPos().y),
-				(int) (getPos().x + getPos().width), (int) (getPos().y + getPos().height),
+		g.drawImage(
+				image,
+				(int) (getPos().x),
+				(int) (getPos().y),
+				(int) (getPos().x + getPos().width),
+				(int) (getPos().y + getPos().height),
 				(int) ((animates % numFrames) * getPos().width),
 				(int) (direction * getPos().height),
 				(int) (((animates % numFrames) * getPos().width) + getPos().width),

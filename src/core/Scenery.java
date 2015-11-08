@@ -31,7 +31,6 @@ import org.xml.sax.SAXException;
 public class Scenery {
 
 	private Rectangle2D.Double pos;
-	private String name;
 	private HashMap<Integer, String> destino;
 	private int width, height;
 	private int tileWidth;
@@ -51,8 +50,7 @@ public class Scenery {
 	 * 
 	 * @param diretorio
 	 *            Diretorio de onde esta o cenario a ser carregado
-	 * @param tileset
-	 *            nome do arquivo tileset para este cenario
+	 *            
 	 */
 
 	public Scenery(String diretorio) {
@@ -164,7 +162,7 @@ public class Scenery {
 	}
 
 	/**
-	 * Carrega o cenário a partir de um diretorio
+	 * Carrega o cenário a partir de um diretorio e inicializa todos os atributos do cenário.
 	 * 
 	 * @param diretorio
 	 *            Diretorio de onde esta o cenario
@@ -175,7 +173,6 @@ public class Scenery {
 	private void carregaCenario(String diretorio) {
 		InputStream is = getClass().getClassLoader().getResourceAsStream(
 				"scenerys/" + diretorio + ".tmx");
-		this.name = diretorio;
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
@@ -225,10 +222,6 @@ public class Scenery {
 			pos.height = height * tileHeight;
 		}
 
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	/**
@@ -361,6 +354,14 @@ public class Scenery {
 		destino.put(local, cenario);
 	}
 
+	/**
+	 * Metodo que retorna o local de destino para o qual o personagem se teleporta.
+	 * 
+	 * @param local
+	 *            numero do local para o qual o personagem ira se teleportar
+	 * 
+	 * @return String
+	 */
 	public String getDestino(int local) {
 		if (destino.containsKey(local)) {
 			return destino.get(local);

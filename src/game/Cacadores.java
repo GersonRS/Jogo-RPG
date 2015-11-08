@@ -1,8 +1,9 @@
 package game;
 
+import java.io.IOException;
 import java.util.Random;
 
-import core.Iteracao;
+import core.Interacao;
 import core.Personagem;
 
 public class Cacadores extends Personagem {
@@ -10,7 +11,7 @@ public class Cacadores extends Personagem {
 	int num = 5;
 	Random r;
 
-	public Cacadores(int x, int y, int width, int height, int numFrames) {
+	public Cacadores(int x, int y, int width, int height, int numFrames) throws IOException {
 		super(x, y, width, height, numFrames, "Monstro.png");
 		r = new Random();
 		direction = 2;
@@ -46,7 +47,7 @@ public class Cacadores extends Personagem {
 	}
 
 	@Override
-	public void mover(Iteracao i) {
+	public void mover(Interacao i) {
 
 	}
 }

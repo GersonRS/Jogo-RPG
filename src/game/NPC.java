@@ -6,7 +6,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import core.Game;
-import core.Iteracao;
+import core.Interacao;
 import core.Personagem;
 
 public class NPC extends Personagem {
@@ -17,7 +17,7 @@ public class NPC extends Personagem {
 	protected BufferedImage rosto;
 
 	public NPC(int x, int y, int width, int height, int direcao, int numFrames,
-			String img, Missao missao) {
+			String img, Missao missao) throws IOException {
 		super(x, y, width, height, numFrames, img);
 		direction = direcao;
 		this.menssagem = "seu nivel ainda é baixo para esta missão, \n fale com outro aldeão e suba de nivel.";
@@ -32,7 +32,7 @@ public class NPC extends Personagem {
 	}
 
 	@Override
-	public void mover(Iteracao i) {
+	public void mover(Interacao i) {
 	}
 
 	public String getDialogo(Game game) {

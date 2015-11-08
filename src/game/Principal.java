@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import core.Iteracao;
+import core.Interacao;
 import core.Personagem;
 
 public class Principal extends Personagem {
@@ -24,7 +24,7 @@ public class Principal extends Personagem {
 	
 
 	public Principal(int x, int y, int width, int height, int numFrames,
-			String img) {
+			String img) throws IOException {
 		super(x, y, width, height, numFrames, img);
 		this.hpMax = 250;
 		this.hp = 250;
@@ -44,7 +44,7 @@ public class Principal extends Personagem {
 	}
 
 	@Override
-	public void mover(Iteracao i) {
+	public void mover(Interacao i) {
 		if (i.isPressed(KeyEvent.VK_RIGHT))
 			acceleration.x = 0.4;
 		else if (i.isPressed(KeyEvent.VK_LEFT))

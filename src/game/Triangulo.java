@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.Random;
 
-import core.Iteracao;
+import core.Interacao;
 
 public class Triangulo extends PecaGeometrica {
 
@@ -33,7 +33,7 @@ public class Triangulo extends PecaGeometrica {
 
 
 	@Override
-	public void mover(Iteracao i) {
+	public void mover(Interacao i) {
 
 	}
 
