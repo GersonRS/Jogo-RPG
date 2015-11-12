@@ -3,7 +3,7 @@ package game;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import core.Interacao;
+import coreBase.Interacao;
 
 public class Quadrado extends PecaGeometrica {
 

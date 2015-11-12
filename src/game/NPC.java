@@ -5,9 +5,9 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import core.Game;
-import core.Interacao;
-import core.Personagem;
+import coreBase.Game;
+import coreBase.Interacao;
+import coreBase.Personagem;
 
 public class NPC extends Personagem {
 

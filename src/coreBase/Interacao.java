@@ -1,4 +1,4 @@
-package core;
+package coreBase;
 
 import java.awt.Point;
 import java.awt.event.KeyListener;

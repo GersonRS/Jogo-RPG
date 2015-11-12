@@ -3,8 +3,8 @@ package game;
 import java.io.IOException;
 import java.util.Random;
 
-import core.Interacao;
-import core.Personagem;
+import coreBase.Interacao;
+import coreBase.Personagem;
 
 public class Cacadores extends Personagem {
 

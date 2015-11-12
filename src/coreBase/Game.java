@@ -1,4 +1,4 @@
-package core;
+package coreBase;
 
 import java.awt.AlphaComposite;
 import java.awt.Dimension;
@@ -42,12 +42,12 @@ import javax.swing.JFrame;
 
 public abstract class Game implements Runnable, Interacao {
 
-	private HashMap<Integer, Integer> keyCache;
-	private ArrayList<Integer> pressedKeys;
-	private ArrayList<Integer> releasedKeys;
-	private boolean mouseButton1;
-	private boolean mouseButton2;
-	private Point mousePos;
+	private volatile HashMap<Integer, Integer> keyCache;
+	private volatile ArrayList<Integer> pressedKeys;
+	private volatile ArrayList<Integer> releasedKeys;
+	private volatile boolean mouseButton1;
+	private volatile boolean mouseButton2;
+	private volatile Point mousePos;
 	private volatile float alpha = 0.0f;
 	private float add = 0.01f;
 	private String nextCenerio;
@@ -65,6 +65,7 @@ public abstract class Game implements Runnable, Interacao {
 	private BufferedImage tela;
 	protected int width = 800;
 	protected int height = 600;
+	protected boolean pause = false;
 
 	private int expectedTPS;
 	private double expectedNanosPerTick;
@@ -109,7 +110,7 @@ public abstract class Game implements Runnable, Interacao {
 		while (running) {
 			updateTime();
 			if (System.nanoTime() > nanoTimeAtNextTick
-					&& skippedFrames < maxFrameSkip) {
+					&& skippedFrames < maxFrameSkip && !pause) {
 				nanoTimeAtNextTick += expectedNanosPerTick;
 				updateKeys();
 				logica(totalTicks);
@@ -154,6 +155,8 @@ public abstract class Game implements Runnable, Interacao {
 		bufferStrategy = this.mainWindow.getBufferStrategy();
 
 		this.mainWindow.addKeyListener(this);
+		this.mainWindow.addMouseListener(this);
+		this.mainWindow.addMouseMotionListener(this);
 
 		onLoad();
 	}
@@ -368,38 +371,46 @@ public abstract class Game implements Runnable, Interacao {
 	}
 
 	public void updateKeys() {
-		try {
-			for (Integer keyCode : keyCache.keySet()) {
-				if (isJustPressed(keyCode)) {
-					keyCache.put(keyCode, KEY_PRESSED);
+		synchronized (pressedKeys) {
+			synchronized (releasedKeys) {
+				try {
+					for (Integer keyCode : keyCache.keySet()) {
+						if (isJustPressed(keyCode)) {
+							keyCache.put(keyCode, KEY_PRESSED);
+						}
+					}
+					for (int i = 0; i < releasedKeys.size(); i++) {
+						keyCache.put(releasedKeys.get(i), KEY_RELEASED);
+					}
+					for (int i = 0; i < pressedKeys.size(); i++) {
+						if (isReleased(pressedKeys.get(i))) {
+							keyCache.put(pressedKeys.get(i), KEY_JUST_PRESSED);
+						} else {
+							keyCache.put(pressedKeys.get(i), KEY_PRESSED);
+						}
+					}
+				} catch (NullPointerException e) {
+					System.out.println("aff");
 				}
+				pressedKeys.clear();
+				releasedKeys.clear();
 			}
-			for (int i = 0; i < releasedKeys.size(); i++) {
-				keyCache.put(releasedKeys.get(i), KEY_RELEASED);
-			}
-			for (int i = 0; i < pressedKeys.size(); i++) {
-				if (isReleased(pressedKeys.get(i))) {
-					keyCache.put(pressedKeys.get(i), KEY_JUST_PRESSED);
-				} else {
-					keyCache.put(pressedKeys.get(i), KEY_PRESSED);
-				}
-			}
-		} catch (NullPointerException e) {
-			System.out.println("aff");
 		}
-		pressedKeys.clear();
-		releasedKeys.clear();
 	}
 
 	public void keyTyped(KeyEvent e) {
 	}
 
 	public void keyPressed(KeyEvent e) {
-		pressedKeys.add(e.getKeyCode());
+		synchronized (pressedKeys) {
+			pressedKeys.add(e.getKeyCode());
+		}
 	}
 
 	public void keyReleased(KeyEvent e) {
-		releasedKeys.add(e.getKeyCode());
+		synchronized(pressedKeys){
+			releasedKeys.add(e.getKeyCode());
+		}
 	}
 
 	public void mouseClicked(MouseEvent e) {
@@ -445,11 +456,11 @@ public abstract class Game implements Runnable, Interacao {
 
 	abstract protected void onRenderHud(Graphics2D g);
 
-	protected void playSound(String fileName,boolean loop) {
+	protected void playSound(String fileName, boolean loop) {
 		try {
-			if(loop)
+			if (loop)
 				Audio.getInstance().loadAudio(fileName).loop();
-			else 
+			else
 				Audio.getInstance().loadAudio(fileName).play();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -573,5 +584,5 @@ public abstract class Game implements Runnable, Interacao {
 	public BufferedImage getTela() {
 		return tela;
 	}
-	
+
 }

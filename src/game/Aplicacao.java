@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import core.Elemento;
-import core.Game;
+import coreBase.Elemento;
+import coreBase.Game;
 
 public class Aplicacao extends Game {
 

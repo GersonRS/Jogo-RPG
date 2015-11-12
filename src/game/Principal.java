@@ -6,8 +6,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import core.Interacao;
-import core.Personagem;
+import coreBase.Interacao;
+import coreBase.Personagem;
 
 public class Principal extends Personagem {
 

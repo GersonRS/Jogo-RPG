@@ -2,8 +2,8 @@ package game;
 
 import java.io.IOException;
 
-import core.Interacao;
-import core.Personagem;
+import coreBase.Interacao;
+import coreBase.Personagem;
 
 public class Rival extends Personagem {
 

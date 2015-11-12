@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.Random;
 
-import core.Interacao;
+import coreBase.Interacao;
 
 public class Triangulo extends PecaGeometrica {
 
