@@ -40,7 +40,7 @@ import javax.swing.JFrame;
  * <code> Game </ code> é umaclasse abstrata.
  */
 
-public abstract class Game implements Runnable, Interacao {
+public abstract class GameBase implements Runnable, Interacao {
 
 	private volatile HashMap<Integer, Integer> keyCache;
 	private volatile ArrayList<Integer> pressedKeys;
@@ -84,7 +84,7 @@ public abstract class Game implements Runnable, Interacao {
 	/**
 	 * Crie um novo objeto Game e uma atualização por segundo de 80 frames.
 	 */
-	public Game() {
+	public GameBase() {
 		this.running = true;
 		this.keyCache = new HashMap<Integer, Integer>();
 		this.pressedKeys = new ArrayList<Integer>();

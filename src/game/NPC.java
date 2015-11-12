@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import coreBase.Game;
+import coreBase.GameBase;
 import coreBase.Interacao;
 import coreBase.Personagem;
 
@@ -35,7 +35,7 @@ public class NPC extends Personagem {
 	public void mover(Interacao i) {
 	}
 
-	public String getDialogo(Game game) {
+	public String getDialogo(GameBase game) {
 		Principal p = (Principal) game.getElementoPrincipal();
 		if (missao.isAtiva()) {
 			if (missao.isConcluida()) {

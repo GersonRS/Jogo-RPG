@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import coreBase.Elemento;
-import coreBase.Game;
+import coreBase.GameBase;
 
-public class Aplicacao extends Game {
+public class Aplicacao extends GameBase {
 
 	ArrayList<Missao> missoes;
 	Hud hud;
