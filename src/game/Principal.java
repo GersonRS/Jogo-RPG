@@ -1,6 +1,8 @@
 package game;
 
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Rectangle2D.Double;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -66,4 +68,20 @@ public class Principal extends Personagem {
 		return inventario;
 	}
 
+	@Override
+	public void update(int currentTick) {
+		super.update(currentTick);
+	}
+
+	@Override
+	public void render(Graphics2D g) {
+		super.render(g);
+	}
+
+	@Override
+	public Double getColisao() {
+		return super.getColisao();
+	}
+
+	
 }

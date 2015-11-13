@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Gerson
  */
-public class Scenery {
+public class Cenario {
 
 	private Rectangle2D.Double pos;
 	private HashMap<Integer, String> destino;
@@ -53,7 +53,7 @@ public class Scenery {
 	 *            
 	 */
 
-	public Scenery(String diretorio) {
+	public Cenario(String diretorio) {
 		this.datas = new HashMap<String, String>();
 		this.camadas = new HashMap<String, int[][]>();
 		this.obstaculos = new HashMap<String, ArrayList<Elemento>>();

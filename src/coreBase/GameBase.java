@@ -78,7 +78,7 @@ public abstract class GameBase implements Runnable, Interacao {
 
 	protected Elemento elemento;
 	protected HashMap<String, ArrayList<Elemento>> elementos;
-	protected HashMap<String, Scenery> cenarios;
+	protected HashMap<String, Cenario> cenarios;
 	protected String currentCenario;
 
 	/**
@@ -90,8 +90,8 @@ public abstract class GameBase implements Runnable, Interacao {
 		this.pressedKeys = new ArrayList<Integer>();
 		this.releasedKeys = new ArrayList<Integer>();
 		this.elementos = new HashMap<String, ArrayList<Elemento>>();
-		this.cenarios = new HashMap<String, Scenery>();
-
+		this.cenarios = new HashMap<String, Cenario>();
+		this.mousePos = new Point();
 	}
 
 	/**
@@ -373,24 +373,20 @@ public abstract class GameBase implements Runnable, Interacao {
 	public void updateKeys() {
 		synchronized (pressedKeys) {
 			synchronized (releasedKeys) {
-				try {
-					for (Integer keyCode : keyCache.keySet()) {
-						if (isJustPressed(keyCode)) {
-							keyCache.put(keyCode, KEY_PRESSED);
-						}
+				for (Integer keyCode : keyCache.keySet()) {
+					if (isJustPressed(keyCode)) {
+						keyCache.put(keyCode, KEY_PRESSED);
 					}
-					for (int i = 0; i < releasedKeys.size(); i++) {
-						keyCache.put(releasedKeys.get(i), KEY_RELEASED);
+				}
+				for (int i = 0; i < releasedKeys.size(); i++) {
+					keyCache.put(releasedKeys.get(i), KEY_RELEASED);
+				}
+				for (int i = 0; i < pressedKeys.size(); i++) {
+					if (isReleased(pressedKeys.get(i))) {
+						keyCache.put(pressedKeys.get(i), KEY_JUST_PRESSED);
+					} else {
+						keyCache.put(pressedKeys.get(i), KEY_PRESSED);
 					}
-					for (int i = 0; i < pressedKeys.size(); i++) {
-						if (isReleased(pressedKeys.get(i))) {
-							keyCache.put(pressedKeys.get(i), KEY_JUST_PRESSED);
-						} else {
-							keyCache.put(pressedKeys.get(i), KEY_PRESSED);
-						}
-					}
-				} catch (NullPointerException e) {
-					System.out.println("aff");
 				}
 				pressedKeys.clear();
 				releasedKeys.clear();
@@ -408,7 +404,7 @@ public abstract class GameBase implements Runnable, Interacao {
 	}
 
 	public void keyReleased(KeyEvent e) {
-		synchronized(pressedKeys){
+		synchronized (pressedKeys) {
 			releasedKeys.add(e.getKeyCode());
 		}
 	}
@@ -477,7 +473,7 @@ public abstract class GameBase implements Runnable, Interacao {
 
 	protected void loadCenario(String cenario) {
 		if (!cenarios.containsKey(cenario)) {
-			Scenery scenery = new Scenery(cenario);
+			Cenario scenery = new Cenario(cenario);
 			this.cenarios.put(cenario, scenery);
 			ArrayList<Elemento> elements = new ArrayList<Elemento>();
 			elementos.put(cenario, elements);
@@ -486,7 +482,7 @@ public abstract class GameBase implements Runnable, Interacao {
 
 	protected void currentCenario(String current) {
 		if (cenarios.containsKey(current)) {
-			Scenery scenery = cenarios.get(current);
+			Cenario scenery = cenarios.get(current);
 			tela = new BufferedImage((int) scenery.getPos().width,
 					(int) scenery.getPos().height,
 					BufferedImage.TYPE_4BYTE_ABGR);
