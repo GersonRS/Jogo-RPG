@@ -1,4 +1,4 @@
-package coreBase;
+package core;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
@@ -41,8 +41,8 @@ public class Cenario {
 	private HashMap<String, String> datas;
 	private HashMap<String, BufferedImage> layers;
 	private BufferedImage image;
-	private ArrayList<String> layersBase;
-	private ArrayList<String> layersSuperficie;
+	private ArrayList<String> layersInferiores;
+	private ArrayList<String> layersSuperiores;
 
 	/**
 	 * 
@@ -57,8 +57,8 @@ public class Cenario {
 		this.datas = new HashMap<String, String>();
 		this.camadas = new HashMap<String, int[][]>();
 		this.obstaculos = new HashMap<String, ArrayList<Elemento>>();
-		this.layersBase = new ArrayList<String>();
-		this.layersSuperficie = new ArrayList<String>();
+		this.layersInferiores = new ArrayList<String>();
+		this.layersSuperiores = new ArrayList<String>();
 		this.destino = new HashMap<Integer, String>();
 		pos = new Rectangle2D.Double();
 		carregaCenario(diretorio);
@@ -253,29 +253,29 @@ public class Cenario {
 	}
 
 	/**
-	 * Metodo que desenha as camadas bases
+	 * Metodo que desenha as camadas inferiores
 	 * 
 	 * @param g
 	 *            Graphics onde as camadas bases seram desenhadas
 	 * 
 	 * @return void
 	 */
-	public void renderBase(Graphics2D g) {
-		for (String string : layersBase) {
+	public void renderInferior(Graphics2D g) {
+		for (String string : layersInferiores) {
 			render(g, string);
 		}
 	}
 
 	/**
-	 * Metodo que desenha as camadas da superficie
+	 * Metodo que desenha as camadas superiores
 	 * 
 	 * @param g
 	 *            Graphics onde as camadas da superficie seram desenhadas
 	 * 
 	 * @return void
 	 */
-	public void renderSuperficie(Graphics2D g) {
-		for (String string : layersSuperficie) {
+	public void renderSuperior(Graphics2D g) {
+		for (String string : layersSuperiores) {
 			render(g, string);
 		}
 	}
@@ -284,24 +284,24 @@ public class Cenario {
 	 * Metodo para a a definição das camadas bases
 	 * 
 	 * @param s
-	 *            Nome da camada a ser definida como camada base
+	 *            Nome da camada a ser definida como camada inferior
 	 * 
 	 * @return void
 	 */
-	public void configLayerBase(String s) {
-		layersBase.add(s);
+	public void configLayerInferior(String s) {
+		layersInferiores.add(s);
 	}
 
 	/**
-	 * Metodo para a a definição das camadas da superficie
+	 * Metodo para a definição das camadas superiores
 	 * 
 	 * @param s
-	 *            Nome da camada a ser definida como camada da superficie
+	 *            Nome da camada a ser definida como camada superior
 	 * 
 	 * @return void
 	 */
-	public void configLayerSuperficie(String s) {
-		layersSuperficie.add(s);
+	public void configLayerSuperior(String s) {
+		layersSuperiores.add(s);
 	}
 
 	/**

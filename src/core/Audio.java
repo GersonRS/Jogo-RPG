@@ -1,4 +1,4 @@
-package coreBase;
+package core;
 
 import java.applet.Applet;
 import java.applet.AudioClip;

@@ -1,4 +1,4 @@
-package coreBase;
+package core;
 
 import java.awt.geom.Rectangle2D;
 /**

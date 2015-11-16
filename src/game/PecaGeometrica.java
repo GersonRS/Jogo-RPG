@@ -9,7 +9,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-import coreBase.Elemento;
+import core.Elemento;
 
 public abstract class PecaGeometrica extends Elemento {
 

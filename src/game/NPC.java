@@ -5,9 +5,9 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import coreBase.GameBase;
-import coreBase.Interacao;
-import coreBase.Personagem;
+import core.GameBase;
+import core.Interacao;
+import core.Personagem;
 
 public class NPC extends Personagem {
 
@@ -97,7 +97,7 @@ public class NPC extends Personagem {
 									missao.getIdPecaGeometricaRequerida()[i]);
 						}
 						game.removerObstaculos(missao.getRecompenca() - 100);
-						game.configLayerBase(missao.getLayerLiberada());
+						game.configLayerInferior(missao.getLayerLiberada());
 						return "parabens você concluiu a missão com sucesso. \nagora você poderá passar por novos caminhos";
 					}
 					p.maisExp(missao.getExp());

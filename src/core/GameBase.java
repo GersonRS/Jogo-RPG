@@ -1,4 +1,4 @@
-package coreBase;
+package core;
 
 import java.awt.AlphaComposite;
 import java.awt.Dimension;
@@ -496,28 +496,28 @@ public abstract class GameBase implements Runnable, Interacao {
 		}
 	}
 
-	protected void configLayerBase(String cenario, String layer) {
-		cenarios.get(cenario).configLayerBase(layer);
+	protected void configLayerInferior(String cenario, String layer) {
+		cenarios.get(cenario).configLayerInferior(layer);
 	}
 
-	public void configLayerBase(String layer) {
-		cenarios.get(currentCenario).configLayerBase(layer);
+	public void configLayerInferior(String layer) {
+		cenarios.get(currentCenario).configLayerInferior(layer);
 	}
 
-	protected void configLayerSuperficie(String cenario, String layer) {
-		cenarios.get(cenario).configLayerSuperficie(layer);
+	protected void configLayerSuperior(String cenario, String layer) {
+		cenarios.get(cenario).configLayerSuperior(layer);
 	}
 
 	protected void renderCenario(Graphics2D g) {
 		cenarios.get(currentCenario).render(g);
 	}
 
-	protected void renderCenarioBase(Graphics2D g) {
-		cenarios.get(currentCenario).renderBase(g);
+	protected void renderCenarioInferior(Graphics2D g) {
+		cenarios.get(currentCenario).renderInferior(g);
 	}
 
-	protected void renderCenarioSuperficie(Graphics2D g) {
-		cenarios.get(currentCenario).renderSuperficie(g);
+	protected void renderCenarioSuperior(Graphics2D g) {
+		cenarios.get(currentCenario).renderSuperior(g);
 	}
 
 	protected void renderCenario(Graphics2D g, String camada) {

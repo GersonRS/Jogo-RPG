@@ -8,8 +8,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import coreBase.Interacao;
-import coreBase.Personagem;
+import core.Interacao;
+import core.Personagem;
 
 public class Principal extends Personagem {
 

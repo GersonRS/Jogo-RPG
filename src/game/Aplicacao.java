@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import coreBase.Elemento;
-import coreBase.GameBase;
+import core.Elemento;
+import core.GameBase;
 
 public class Aplicacao extends GameBase {
 
@@ -199,9 +199,9 @@ public class Aplicacao extends GameBase {
 
 	@Override
 	public void onRender(Graphics2D g) {
-		renderCenarioBase(g);
+		renderCenarioInferior(g);
 		renderElementos(g);
-		renderCenarioSuperficie(g);
+		renderCenarioSuperior(g);
 		Graphics2D mini = (Graphics2D) minimap.getGraphics();
 		mini.setColor(Color.BLACK);
 		mini.fillRect(0, 0, 40*32, 40*32);
@@ -235,71 +235,71 @@ public class Aplicacao extends GameBase {
 
 	public void configLayers() {
 		// configuração do cenario caverna 1
-		configLayerBase("caverna 1", "vacuo");
-		configLayerBase("caverna 1", "chao");
-		configLayerBase("caverna 1", "pedras");
-		configLayerBase("caverna 1", "paredes");
-		configLayerSuperficie("caverna 1", "folhas");
+		configLayerInferior("caverna 1", "vacuo");
+		configLayerInferior("caverna 1", "chao");
+		configLayerInferior("caverna 1", "pedras");
+		configLayerInferior("caverna 1", "paredes");
+		configLayerSuperior("caverna 1", "folhas");
 		// configuração do cenario cidade
-		configLayerBase("cidade", "grama");
-		configLayerBase("cidade", "areia");
-		configLayerBase("cidade", "casas");
-		configLayerBase("cidade", "troncos");
-		configLayerBase("cidade", "muros");
-		configLayerSuperficie("cidade", "telhado");
-		configLayerSuperficie("cidade", "folhas");
+		configLayerInferior("cidade", "grama");
+		configLayerInferior("cidade", "areia");
+		configLayerInferior("cidade", "casas");
+		configLayerInferior("cidade", "troncos");
+		configLayerInferior("cidade", "muros");
+		configLayerSuperior("cidade", "telhado");
+		configLayerSuperior("cidade", "folhas");
 		// configuração do cenario floresta 1
-		configLayerBase("floresta 1", "grama");
-		configLayerBase("floresta 1", "areia");
-		configLayerBase("floresta 1", "penhasco 1");
-		configLayerBase("floresta 1", "penhasco 2");
-		configLayerBase("floresta 1", "pedras");
-		configLayerBase("floresta 1", "morros 1");
-		configLayerBase("floresta 1", "troncos");
-		configLayerBase("floresta 1", "ponte");
-		configLayerSuperficie("floresta 1", "morros 2");
-		configLayerSuperficie("floresta 1", "folhas 1");
-		configLayerSuperficie("floresta 1", "folhas 2");
+		configLayerInferior("floresta 1", "grama");
+		configLayerInferior("floresta 1", "areia");
+		configLayerInferior("floresta 1", "penhasco 1");
+		configLayerInferior("floresta 1", "penhasco 2");
+		configLayerInferior("floresta 1", "pedras");
+		configLayerInferior("floresta 1", "morros 1");
+		configLayerInferior("floresta 1", "troncos");
+		configLayerInferior("floresta 1", "ponte");
+		configLayerSuperior("floresta 1", "morros 2");
+		configLayerSuperior("floresta 1", "folhas 1");
+		configLayerSuperior("floresta 1", "folhas 2");
 		// configuração do cenario floresta 2
-		configLayerBase("floresta 2", "grama");
-		configLayerBase("floresta 2", "penhasco 1");
-		configLayerBase("floresta 2", "penhasco 2");
-		configLayerBase("floresta 2", "areia");
-		configLayerBase("floresta 2", "morros 1");
-		configLayerBase("floresta 2", "troncos");
-		configLayerSuperficie("floresta 2", "folhas 1");
-		configLayerSuperficie("floresta 2", "folhas 2");
+		configLayerInferior("floresta 2", "grama");
+		configLayerInferior("floresta 2", "penhasco 1");
+		configLayerInferior("floresta 2", "penhasco 2");
+		configLayerInferior("floresta 2", "areia");
+		configLayerInferior("floresta 2", "morros 1");
+		configLayerInferior("floresta 2", "troncos");
+		configLayerSuperior("floresta 2", "folhas 1");
+		configLayerSuperior("floresta 2", "folhas 2");
 		// configuração do cenario floresta 3
-		configLayerBase("floresta 3", "grama");
-		configLayerBase("floresta 3", "areia");
-		configLayerBase("floresta 3", "penhasco 1");
-		configLayerBase("floresta 3", "penhasco 2");
-		configLayerBase("floresta 3", "ponte");
-		configLayerBase("floresta 3", "troncos");
-		configLayerBase("floresta 3", "pedras");
-		configLayerBase("floresta 3", "morros 1");
-		configLayerSuperficie("floresta 3", "folhas 1");
-		configLayerSuperficie("floresta 3", "folhas 2");
+		configLayerInferior("floresta 3", "grama");
+		configLayerInferior("floresta 3", "areia");
+		configLayerInferior("floresta 3", "penhasco 1");
+		configLayerInferior("floresta 3", "penhasco 2");
+		configLayerInferior("floresta 3", "ponte");
+		configLayerInferior("floresta 3", "troncos");
+		configLayerInferior("floresta 3", "pedras");
+		configLayerInferior("floresta 3", "morros 1");
+		configLayerSuperior("floresta 3", "folhas 1");
+		configLayerSuperior("floresta 3", "folhas 2");
 		// configuração do cenario floresta 4
-		configLayerBase("floresta 4", "grama");
-		configLayerBase("floresta 4", "penhasco 1");
-		configLayerBase("floresta 4", "penhasco 2");
-		configLayerBase("floresta 4", "areia");
-		configLayerBase("floresta 4", "morros 1");
-		configLayerBase("floresta 4", "morros 2");
-		configLayerBase("floresta 4", "ponte");
-		configLayerBase("floresta 4", "troncos");
-		configLayerBase("floresta 4", "pedras");
-		configLayerSuperficie("floresta 4", "folhas 1");
-		configLayerSuperficie("floresta 4", "folhas 2");
+		configLayerInferior("floresta 4", "grama");
+		configLayerInferior("floresta 4", "penhasco 1");
+		configLayerInferior("floresta 4", "penhasco 2");
+		configLayerInferior("floresta 4", "areia");
+		configLayerInferior("floresta 4", "morros 1");
+		configLayerInferior("floresta 4", "morros 2");
+		configLayerInferior("floresta 4", "ponte");
+		configLayerInferior("floresta 4", "troncos");
+		configLayerInferior("floresta 4", "pedras");
+		configLayerSuperior("floresta 4", "folhas 1");
+		configLayerSuperior("floresta 4", "folhas 2");
 		// configuração do cenario floresta 1
-		configLayerBase("floresta 5", "grama");
-		configLayerBase("floresta 5", "areia");
-		configLayerBase("floresta 5", "morros");
-		configLayerBase("floresta 5", "troncos");
-		configLayerBase("floresta 5", "pedras");
-		configLayerSuperficie("floresta 5", "folhas 1");
-		configLayerSuperficie("floresta 5", "folhas 2");
+		configLayerInferior("floresta 5", "grama");
+		configLayerInferior("floresta 5", "areia");
+		configLayerInferior("floresta 5", "morros");
+		configLayerInferior("floresta 5", "troncos");
+		configLayerInferior("floresta 5", "pedras");
+		configLayerSuperior("floresta 5", "folhas 1");
+		configLayerSuperior("floresta 5", "folhas 2");
 
 	}
 
